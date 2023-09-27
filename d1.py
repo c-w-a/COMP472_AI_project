@@ -310,24 +310,49 @@ class Game:
             target.mod_health(health_delta)
             self.remove_dead(coord)
 
-    def is_valid_move(self, coords : CoordPair) -> bool:
-        """Validate a move expressed as a CoordPair. TODO: WRITE MISSING CODE!!!"""
-        
+    def is_valid_move(self, coords: CoordPair) -> bool:
+        """Validate a move expressed as a CoordPair."""
         if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):
             return False
+
         unit = self.get(coords.src)
         if unit is None or unit.player != self.next_player:
             return False
-        unit = self.get(coords.dst)
-        return (unit is None)
 
-    def perform_move(self, coords : CoordPair) -> Tuple[bool,str]:
-        """Validate and perform a move expressed as a CoordPair. TODO: WRITE MISSING CODE!!!"""
+        unit_dst = self.get(coords.dst)
+        if unit_dst is not None:
+            return False  # Destination is not free
+
+        # Check if the destination is engaged in combat
+        adjacent_coords = coords.dst.iter_adjacent()
+        adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
+
+        if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
+            # AI, Firewall, or Program cannot move if engaged in combat
+            if any(unit for unit in adversarial_units if unit.player != unit.player):
+                return False
+            # Check if it's allowed to move up or left
+            if unit.player == Player.Attacker:
+                return coords.src.row > coords.dst.row or coords.src.col > coords.dst.col
+            else:
+                return coords.src.row < coords.dst.row or coords.src.col < coords.dst.col
+
+        # Tech and Virus can move even if engaged in combat
+        return True
+
+
+    def perform_move(self, coords: CoordPair) -> Tuple[bool, str]:
+        """Validate and perform a move expressed as a CoordPair."""
         if self.is_valid_move(coords):
-            self.set(coords.dst,self.get(coords.src))
-            self.set(coords.src,None)
-            return (True,"")
-        return (False,"invalid move")
+            src_unit = self.get(coords.src)
+            dst_unit = self.get(coords.dst)
+
+            # Perform the move
+            self.set(coords.dst, src_unit)
+            self.set(coords.src, None)
+            return (True, "Successfully moved")
+
+        return (False, "Invalid move")
 
     def next_turn(self):
         """Transitions game to the next turn."""
