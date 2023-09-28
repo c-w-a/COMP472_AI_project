@@ -325,23 +325,6 @@ class Game:
         return True
 
     def movement(self, coords: CoordPair):
-        # Check if the destination is engaged in combat
-        adjacent_coords = coords.dst.iter_adjacent()
-        adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
-        unit = self.get(coords.src)
-        if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
-            # AI, Firewall, or Program cannot move if engaged in combat
-            if any(unit for unit in adversarial_units if unit.player != unit.player):
-                return False
-            # Check if it's allowed to move up or left
-            if unit.player == Player.Attacker:
-                return coords.src.row > coords.dst.row or coords.src.col > coords.dst.col
-            else:
-                return coords.src.row < coords.dst.row or coords.src.col < coords.dst.col
-
-        # Tech and Virus can move even if engaged in combat
-        #return True
-
         # Perform the move
         src_unit = self.get(coords.src)
         self.set(coords.dst, src_unit)
@@ -353,8 +336,8 @@ class Game:
     #def selfdestruct(self, coords: CoordPair):
         # IMPLEMENT        
 
-    #def attack(self, coords: CoordPair):
-        # IMPLEMENT
+    def attack(self, coords: CoordPair):
+        return# IMPLEMENT
         
     def perform_move(self, coords: CoordPair) -> Tuple[bool, str]:
         """Validate and perform a move expressed as a CoordPair."""
@@ -367,7 +350,28 @@ class Game:
             unit = self.get(coords.dst)
 
             # Movement: (destination is empty)
-            if unit.player == None: 
+            if unit == None: 
+
+                # Check if the destination is engaged in combat
+                adjacent_coords = coords.dst.iter_adjacent()
+                adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
+        
+                unit = self.get(coords.src)
+                if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
+                
+                    # AI, Firewall, or Program cannot move if engaged in combat
+                    if any(unit for unit in adversarial_units if unit.player != unit.player):
+                        return (False, "Can't move, engaged in combat") 
+                    
+                    # Check if it's allowed to move up or left if attacker
+                    if unit.player == Player.Attacker:
+                        if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
+                            return (False, "This player can only move up or left") 
+                    # Check if it's allowed to move down or right if defender
+                    else:
+                        if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
+                            return (False, "This player can only move down or right")
+                
                 self.movement(coords)
                 return (True, "Successfully moved")
             
