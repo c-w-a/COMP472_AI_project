@@ -324,6 +324,13 @@ class Game:
         unit = self.get(coords.dst)
         if unit is None:
             adjacent_coords = coords.src.iter_adjacent()
+            # check that the move is to an adjacent space
+            adjacentMove = False
+            for coord in adjacent_coords:
+                if coord == coords.dst:
+                    adjacentMove = True
+            if not adjacentMove:
+                return False
             adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
             unit = self.get(coords.src)
             if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
@@ -337,7 +344,7 @@ class Game:
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
                     if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
-                        return False           
+                        return False          
         return True
 
     ###   ACTIONS   ###
