@@ -313,16 +313,13 @@ class Game:
 
     def is_valid_move(self, coords: CoordPair) -> bool:
         """Validate a move expressed as a CoordPair."""
-        
         # validate that the coordinates (source and destination) are valid
         if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):
             return False
-
         # validate that the source coordinate is occupied by the current player
         unit = self.get(coords.src)
         if unit is None or unit.player != self.next_player:
             return False
-        
         # validate that the movement is valid (if destination is an open spot)
         unit = self.get(coords.dst)
         if unit is None:
@@ -345,54 +342,54 @@ class Game:
 
     ###   ACTIONS   ###
 
+    # Movement action
     def movement(self, coords: CoordPair):
         src_unit = self.get(coords.src)
         self.set(coords.dst, src_unit)
         self.set(coords.src, None)
 
+    # Repair action
     #def repair(self, coords: CoordPair):
         # IMPLEMENT     
 
+    # Self-destruct action
     #def selfdestruct(self, coords: CoordPair):
         # IMPLEMENT        
 
+    # Attack action
     def attack(self, coords: CoordPair):
-        # figure out type of source player and type of destination player
-        # figure out 'attack score' call mod_health on those 2 coordinates with 'attack score'
-        return
+        # Unit objects for source and target
+        src_unit = self.get(coords.src)
+        dst_unit = self.get(coords.dst)
+        # damage amount for source attack on target
+        damage = src_unit.damage_amount(dst_unit)
+        # subtract damage amount from the Units
+        src_unit.mod_health(-(damage))
+        dst_unit.mod_health(-(damage))
 
     ####################
        
     def perform_move(self, coords: CoordPair) -> Tuple[bool, str]:
         """Validate and perform a move expressed as a CoordPair."""
-        
-        # make sure the move is valid
+        # if move is valid, then figure out which type of action to take:
         if self.is_valid_move(coords):
-            
-            # figure out action type (movement, attack, repair, self-destruct):
-            
             unit = self.get(coords.dst)
-
             # Movement: (destination is empty)
             if unit == None: 
                 self.movement(coords)
                 return (True, "Successfully moved")
-            
             # Self-destruct: (destination is same as source)
             elif unit.player == self.next_player and coords.src == coords.dst:
                 self.selfdestruct(coords)
                 return (True, "Succesful self-destruct")
-            
             # Repair: (destination occupied by a teammate)
             elif unit.player == self.next_player:
                 self.repair(coords)
                 return (True, "Succesful repair")
-            
             # Attack: (destination occupied by other player)
             elif unit.player != self.next_player:
                 self.attack(coords)
                 return (True, "Succesful attack")
-
         return (False, "Invalid move")
 
     def next_turn(self):
