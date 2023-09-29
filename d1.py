@@ -75,7 +75,8 @@ class Unit:
             self.health = 0
         elif self.health > 9:
             self.health = 9
-
+    
+    
     def to_string(self) -> str:
         """Text representation of this unit."""
         p = self.player.name.lower()[0]
@@ -99,6 +100,25 @@ class Unit:
         if target.health + amount > 9:
             return 9 - target.health
         return amount
+    #checks if the destination is occupied by a friendly player
+    def is_friendly(self, dest_unit):
+        return self.player == dest_unit.player
+    #checks if it can repair the next tile. 
+    def can_repair(self, dest_unit):
+        if not self.is_friendly(dest_unit):
+            return False
+        
+        #define repair capabilities
+        repair_capabilities = {
+            0: [1,2],
+            1:[0,4,3]
+        }
+
+        return dest_unit.unit_type in repair_capabilities.get(self.unit_type,[])
+    
+    
+
+        
 
 ##############################################################################################################
 
@@ -356,7 +376,17 @@ class Game:
 
     # Repair action
     #def repair(self, coords: CoordPair):
-        # IMPLEMENT     
+        # IMPLEMENT   
+    def repair(self,coords: CoordPair):    
+        src_unit = self.get(coords.src)
+        dst_unit = self.get(coords.dst)
+        #repair objects 
+        health_boost = src_unit.repair_amount(dst_unit)
+        #add repair amount from the Units
+        dst_unit.mod_health(+(health_boost))
+        
+
+    
 
     # Self-destruct action
     #def selfdestruct(self, coords: CoordPair):
