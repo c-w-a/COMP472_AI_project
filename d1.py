@@ -260,6 +260,7 @@ class Game:
     stats: Stats = field(default_factory=Stats)
     _attacker_has_ai : bool = True
     _defender_has_ai : bool = True
+    max
 
     def __post_init__(self):
         """Automatically called after class init to set up the default board state."""
@@ -331,16 +332,23 @@ class Game:
             target.mod_health(health_delta)
             self.remove_dead(coord)
 
+    
+
     def is_valid_move(self, coords: CoordPair) -> bool:
-        """Validate a move expressed as a CoordPair."""
+        "Validate a move expressed as a CoordPair."
         # validate that the coordinates (source and destination) are valid
-        if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):
+        if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):        #Checks if coord at source is valid and if coord at destination is valid
             return False
+       
+       
         # validate that the source coordinate is occupied by the current player
-        unit = self.get(coords.src)
-        if unit is None or unit.player != self.next_player:
+        unit = self.get(coords.src)                                                             #Checks what unit is at source using "get" method
+        if unit is None or unit.player != self.next_player:                                       #Checks if there is NO unit at soruce or checks if the player of the unit is not the same as the next player whose supposed to make the move
             return False
         # validate that the move is to an adjacent space (or to same space)
+        
+        
+        # validate that the move is to an adjacent space
         adjacent_coords = coords.src.iter_adjacent()
         adjacentMove = False
         selfDestruct = False
@@ -351,19 +359,27 @@ class Game:
                 selfDestruct = True
         if not adjacentMove and not selfDestruct:
             return False
+        
+        
         # validate that the movement is valid (if destination is an open spot)
-        unit = self.get(coords.dst)
+        unit = self.get(coords.dst)                                                         #Checks to see if there is unit at destination.
         if unit is None:
             adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
             unit = self.get(coords.src)
             if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
+               
+               
                 # AI, Firewall, or Program cannot move if engaged in combat
                 if any(unit for unit in adversarial_units if unit.player != unit.player):
                     return False
+                
+                
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
                     if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
                         return False
+                
+                
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
                     if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
@@ -386,7 +402,8 @@ class Game:
         health_boost = src_unit.repair_amount(dst_unit)
         #add repair amount from the Units
         dst_unit.mod_health(+(health_boost))
-        
+        \
+
     # Self-destruct action
     def selfdestruct(self, coords: CoordPair):
         # Unit object for source
@@ -675,6 +692,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--max_depth', type=int, help='maximum search depth')
     parser.add_argument('--max_time', type=float, help='maximum search time')
+    parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
     args = parser.parse_args()
@@ -689,16 +707,23 @@ def main():
     else:
         game_type = GameType.CompVsComp
 
+
     # set up game options
     options = Options(game_type=game_type)
+    
+    
+
 
     # override class defaults via command line options
     if args.max_depth is not None:
         options.max_depth = args.max_depth
     if args.max_time is not None:
         options.max_time = args.max_time
+    if args.max_turns is not None:
+        options.max_turns = args.max_turns
     if args.broker is not None:
         options.broker = args.broker
+
 
     # create a new game
     game = Game(options=options)
@@ -707,6 +732,9 @@ def main():
     out_file.write("Initial board configuration: \n\n")
     out_file.write(game.init_config_to_string())
     out_file.close()
+
+    print(game.options.max_turns)
+    
 
     # the main game loop
     while True:
