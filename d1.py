@@ -100,25 +100,6 @@ class Unit:
         if target.health + amount > 9:
             return 9 - target.health
         return amount
-    #checks if the destination is occupied by a friendly player
-    def is_friendly(self, dest_unit):
-        return self.player == dest_unit.player
-    #checks if it can repair the next tile. 
-    def can_repair(self, dest_unit):
-        if not self.is_friendly(dest_unit):
-            return False
-        
-        #define repair capabilities
-        repair_capabilities = {
-            0: [1,2],
-            1:[0,4,3]
-        }
-
-        return dest_unit.unit_type in repair_capabilities.get(self.unit_type,[])
-    
-    
-
-        
 
 ##############################################################################################################
 
@@ -334,6 +315,15 @@ class Game:
                 else:
                     self._defender_has_ai = False
 
+    # checks board before next turn starts to remove any dead pieces
+    def check_dead(self):
+        all_coords = CoordPair(Coord(0, 0), Coord(4, 4)).iter_rectangle()
+        for coord in all_coords:
+            if self.get(coord) is not None:
+                unit = self.get(coord)
+                if not unit.is_alive():
+                    self.remove_dead(coord)
+
     def mod_health(self, coord : Coord, health_delta : int):
         """Modify health of unit at Coord (positive or negative delta)."""
         target = self.get(coord)
@@ -451,6 +441,7 @@ class Game:
         """Transitions game to the next turn."""
         self.next_player = self.next_player.next()
         self.turns_played += 1
+        self.check_dead()
 
     def to_string(self) -> str:
         """Pretty text representation of the game."""
