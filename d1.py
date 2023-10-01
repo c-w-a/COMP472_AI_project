@@ -10,6 +10,8 @@ from typing import Tuple, TypeVar, Type, Iterable, ClassVar
 import random
 import requests # ?
 
+#output = open('output.txt')
+
 # maximum and minimum values for our heuristic scores (usually represents an end of game condition)
 MAX_HEURISTIC_SCORE = 2000000000
 MIN_HEURISTIC_SCORE = -2000000000
@@ -362,11 +364,11 @@ class Game:
                     return False
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
-                    if coords.src.row <= coords.dst.row or coords.src.col <= coords.dst.col:
+                    if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
                         return False
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
-                    if coords.src.row >= coords.dst.row or coords.src.col >= coords.dst.col:
+                    if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
                         return False          
         return True
 
