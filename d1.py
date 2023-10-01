@@ -236,7 +236,7 @@ class Options:
     max_time : float | None = 5.0
     game_type : GameType = GameType.AttackerVsDefender
     alpha_beta : bool = True
-    max_turns : int | None = 100
+    max_turns : int | None = 1
     randomize_moves : bool = True
     broker : str | None = None
 
