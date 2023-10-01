@@ -10,8 +10,6 @@ from typing import Tuple, TypeVar, Type, Iterable, ClassVar
 import random
 import requests # ?
 
-#output = open('output.txt')
-
 # maximum and minimum values for our heuristic scores (usually represents an end of game condition)
 MAX_HEURISTIC_SCORE = 2000000000
 MIN_HEURISTIC_SCORE = -2000000000
@@ -488,6 +486,30 @@ class Game:
                     output += f"{str(unit):^3} "
             output += "\n"
         return output
+    
+    def init_config_to_string(self) -> str:
+        dim = self.options.dim
+        coord = Coord()
+        output = ""
+        output += "\n   "
+        for col in range(dim):
+            coord.col = col
+            label = coord.col_string()
+            output += f"{label:^3} "
+        output += "\n"
+        for row in range(dim):
+            coord.row = row
+            label = coord.row_string()
+            output += f"{label}: "
+            for col in range(dim):
+                coord.col = col
+                unit = self.get(coord)
+                if unit is None:
+                    output += " .  "
+                else:
+                    output += f"{str(unit):^3} "
+            output += "\n"
+        return output
 
     def __str__(self) -> str:
         """Default string representation of a game."""
@@ -661,6 +683,9 @@ class Game:
 ##############################################################################################################
 
 def main():
+    # make a file to write output to
+    out_file = open('output.txt', 'w')
+
     # parse command line arguments
     parser = argparse.ArgumentParser(
         prog='ai_wargame',
@@ -702,6 +727,11 @@ def main():
 
     # create a new game
     game = Game(options=options)
+
+    # write init config to output file 
+    out_file.write("Initial board configuration: \n\n")
+    out_file.write(game.init_config_to_string())
+    out_file.close()
 
     print(game.options.max_turns)
     
