@@ -735,7 +735,7 @@ def main():
     out_file.write(" --- INITIAL BOARD CONFIG ---\n")
     out_file.write(game.init_config_to_string())
 
-    print("num of turns" + game.options.max_turns)
+    print("num of turns" + str(game.options.max_turns))
 
     print(game.options.max_turns)
     
