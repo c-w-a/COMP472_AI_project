@@ -330,15 +330,21 @@ class Game:
             target.mod_health(health_delta)
             self.remove_dead(coord)
 
+    
+
     def is_valid_move(self, coords: CoordPair) -> bool:
-        """Validate a move expressed as a CoordPair."""
+        "Validate a move expressed as a CoordPair."
         # validate that the coordinates (source and destination) are valid
-        if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):
+        if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):        #Checks if coord at source is valid and if coord at destination is valid
             return False
+       
+       
         # validate that the source coordinate is occupied by the current player
-        unit = self.get(coords.src)
-        if unit is None or unit.player != self.next_player:
+        unit = self.get(coords.src)                                                             #Checks what unit is at source using "get" method
+        if unit is None or unit.player != self.next_player:                                       #Checks if there is NO unit at soruce or checks if the player of the unit is not the same as the next player whose supposed to make the move
             return False
+        
+        
         # validate that the move is to an adjacent space
         adjacent_coords = coords.src.iter_adjacent()
         adjacentMove = False
@@ -347,19 +353,27 @@ class Game:
                 adjacentMove = True
         if not adjacentMove:
             return False
+        
+        
         # validate that the movement is valid (if destination is an open spot)
-        unit = self.get(coords.dst)
+        unit = self.get(coords.dst)                                                         #Checks to see if there is unit at destination.
         if unit is None:
             adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
             unit = self.get(coords.src)
             if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
+               
+               
                 # AI, Firewall, or Program cannot move if engaged in combat
                 if any(unit for unit in adversarial_units if unit.player != unit.player):
                     return False
+                
+                
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
                     if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
                         return False
+                
+                
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
                     if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
