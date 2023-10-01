@@ -100,25 +100,6 @@ class Unit:
         if target.health + amount > 9:
             return 9 - target.health
         return amount
-    #checks if the destination is occupied by a friendly player
-    def is_friendly(self, dest_unit):
-        return self.player == dest_unit.player
-    #checks if it can repair the next tile. 
-    def can_repair(self, dest_unit):
-        if not self.is_friendly(dest_unit):
-            return False
-        
-        #define repair capabilities
-        repair_capabilities = {
-            0: [1,2],
-            1:[0,4,3]
-        }
-
-        return dest_unit.unit_type in repair_capabilities.get(self.unit_type,[])
-    
-    
-
-        
 
 ##############################################################################################################
 
@@ -166,6 +147,17 @@ class Coord:
         yield Coord(self.row,self.col-1)
         yield Coord(self.row+1,self.col)
         yield Coord(self.row,self.col+1)
+
+    def iter_adjacent_and_diagonal(self) -> Iterable[Coord]:
+        """Iterates over adjacent Coords."""
+        yield Coord(self.row-1,self.col)
+        yield Coord(self.row,self.col-1)
+        yield Coord(self.row+1,self.col)
+        yield Coord(self.row,self.col+1)
+        yield Coord(self.row+1,self.col+1)
+        yield Coord(self.row+1,self.col-1)
+        yield Coord(self.row-1,self.col+1)
+        yield Coord(self.row-1,self.col-1)
 
     @classmethod
     def from_string(cls, s : str) -> Coord | None:
@@ -323,6 +315,15 @@ class Game:
                 else:
                     self._defender_has_ai = False
 
+    # checks board before next turn starts to remove any dead pieces
+    def check_dead(self):
+        all_coords = CoordPair(Coord(0, 0), Coord(4, 4)).iter_rectangle()
+        for coord in all_coords:
+            if self.get(coord) is not None:
+                unit = self.get(coord)
+                if not unit.is_alive():
+                    self.remove_dead(coord)
+
     def mod_health(self, coord : Coord, health_delta : int):
         """Modify health of unit at Coord (positive or negative delta)."""
         target = self.get(coord)
@@ -343,15 +344,19 @@ class Game:
         unit = self.get(coords.src)                                                             #Checks what unit is at source using "get" method
         if unit is None or unit.player != self.next_player:                                       #Checks if there is NO unit at soruce or checks if the player of the unit is not the same as the next player whose supposed to make the move
             return False
+        # validate that the move is to an adjacent space (or to same space)
         
         
         # validate that the move is to an adjacent space
         adjacent_coords = coords.src.iter_adjacent()
         adjacentMove = False
+        selfDestruct = False
         for coord in adjacent_coords:
             if coord == coords.dst:
                 adjacentMove = True
-        if not adjacentMove:
+        if coords.src == coords.dst:
+                selfDestruct = True
+        if not adjacentMove and not selfDestruct:
             return False
         
         
@@ -370,13 +375,13 @@ class Game:
                 
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
-                    if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
+                    if coords.src.row <= coords.dst.row or coords.src.col <= coords.dst.col:
                         return False
                 
                 
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
-                    if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
+                    if coords.src.row >= coords.dst.row or coords.src.col >= coords.dst.col:
                         return False          
         return True
 
@@ -388,9 +393,7 @@ class Game:
         self.set(coords.dst, src_unit)
         self.set(coords.src, None)
 
-    # Repair action
-    #def repair(self, coords: CoordPair):
-        # IMPLEMENT   
+    # Repair action 
     def repair(self,coords: CoordPair):    
         src_unit = self.get(coords.src)
         dst_unit = self.get(coords.dst)
@@ -398,13 +401,21 @@ class Game:
         health_boost = src_unit.repair_amount(dst_unit)
         #add repair amount from the Units
         dst_unit.mod_health(+(health_boost))
-        
-
-    
+        \
 
     # Self-destruct action
-    #def selfdestruct(self, coords: CoordPair):
-        # IMPLEMENT        
+    def selfdestruct(self, coords: CoordPair):
+        # Unit object for source
+        src_unit = self.get(coords.src)
+        # subtract all health from source Unit
+        src_unit.mod_health(-9)
+        # make list of adjacent and diagonal spots
+        adjacent_and_diagonal = coords.src.iter_adjacent_and_diagonal()
+        # remove health from adjacent and diagonal spots (if occupied)
+        for coord in adjacent_and_diagonal:
+            unit = self.get(coord)
+            if unit is not None:
+                unit.mod_health(-2)        
 
     # Attack action
     def attack(self, coords: CoordPair):
@@ -446,6 +457,7 @@ class Game:
         """Transitions game to the next turn."""
         self.next_player = self.next_player.next()
         self.turns_played += 1
+        self.check_dead()
 
     def to_string(self) -> str:
         """Pretty text representation of the game."""
