@@ -728,10 +728,14 @@ def main():
     # create a new game
     game = Game(options=options)
 
-    # write init config to output file 
-    out_file.write("Initial board configuration: \n\n")
+    # start writing relevant info to output file
+    out_file.write("\n --- GAME PARAMETERS --- \n")
+    out_file.write("t = " + str(game.options.max_time) + "s\n")
+    out_file.write("max # of turns: " + str(game.options.max_turns) + "\n\n")
+    out_file.write(" --- INITIAL BOARD CONFIG ---\n")
     out_file.write(game.init_config_to_string())
-    out_file.close()
+
+    print("num of turns" + game.options.max_turns)
 
     print(game.options.max_turns)
     
@@ -743,6 +747,10 @@ def main():
         winner = game.has_winner()
         if winner is not None:
             print(f"{winner.name} wins!")
+            # print it to the output file too
+            out_file.write("\n --- WINNER --- \n")
+            out_file.write(winner.name + " wins in " + str(game.turns_played) + " turns!")
+            out_file.close()
             break
         if game.options.game_type == GameType.AttackerVsDefender:
             game.human_turn()
@@ -757,6 +765,7 @@ def main():
                 game.post_move_to_broker(move)
             else:
                 print("Computer doesn't know what to do!!!")
+                out_file.close()
                 exit(1)
 
 ##############################################################################################################
