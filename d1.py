@@ -238,7 +238,7 @@ class Options:
     max_time : float | None = 5.0
     game_type : GameType = GameType.AttackerVsDefender
     alpha_beta : bool = True
-    max_turns : int | None = 1
+    max_turns : int | None = 100
     randomize_moves : bool = True
     broker : str | None = None
 
@@ -262,6 +262,7 @@ class Game:
     stats: Stats = field(default_factory=Stats)
     _attacker_has_ai : bool = True
     _defender_has_ai : bool = True
+    max
 
     def __post_init__(self):
         """Automatically called after class init to set up the default board state."""
@@ -666,6 +667,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--max_depth', type=int, help='maximum search depth')
     parser.add_argument('--max_time', type=float, help='maximum search time')
+    parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
     args = parser.parse_args()
@@ -680,19 +682,29 @@ def main():
     else:
         game_type = GameType.CompVsComp
 
+
     # set up game options
     options = Options(game_type=game_type)
+    
+    
+
 
     # override class defaults via command line options
     if args.max_depth is not None:
         options.max_depth = args.max_depth
     if args.max_time is not None:
         options.max_time = args.max_time
+    if args.max_turns is not None:
+        options.max_turns = args.max_turns
     if args.broker is not None:
         options.broker = args.broker
 
+
     # create a new game
     game = Game(options=options)
+
+    print(game.options.max_turns)
+    
 
     # the main game loop
     while True:
