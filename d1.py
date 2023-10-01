@@ -167,6 +167,17 @@ class Coord:
         yield Coord(self.row+1,self.col)
         yield Coord(self.row,self.col+1)
 
+    def iter_adjacent_and_diagonal(self) -> Iterable[Coord]:
+        """Iterates over adjacent Coords."""
+        yield Coord(self.row-1,self.col)
+        yield Coord(self.row,self.col-1)
+        yield Coord(self.row+1,self.col)
+        yield Coord(self.row,self.col+1)
+        yield Coord(self.row+1,self.col+1)
+        yield Coord(self.row+1,self.col-1)
+        yield Coord(self.row-1,self.col+1)
+        yield Coord(self.row-1,self.col-1)
+
     @classmethod
     def from_string(cls, s : str) -> Coord | None:
         """Create a Coord from a string. ex: D2."""
@@ -339,13 +350,16 @@ class Game:
         unit = self.get(coords.src)
         if unit is None or unit.player != self.next_player:
             return False
-        # validate that the move is to an adjacent space
+        # validate that the move is to an adjacent space (or to same space)
         adjacent_coords = coords.src.iter_adjacent()
         adjacentMove = False
+        selfDestruct = False
         for coord in adjacent_coords:
             if coord == coords.dst:
                 adjacentMove = True
-        if not adjacentMove:
+        if coords.src == coords.dst:
+                selfDestruct = True
+        if not adjacentMove and not selfDestruct:
             return False
         # validate that the movement is valid (if destination is an open spot)
         unit = self.get(coords.dst)
@@ -358,11 +372,11 @@ class Game:
                     return False
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
-                    if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
+                    if coords.src.row <= coords.dst.row or coords.src.col <= coords.dst.col:
                         return False
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
-                    if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
+                    if coords.src.row >= coords.dst.row or coords.src.col >= coords.dst.col:
                         return False          
         return True
 
@@ -374,9 +388,7 @@ class Game:
         self.set(coords.dst, src_unit)
         self.set(coords.src, None)
 
-    # Repair action
-    #def repair(self, coords: CoordPair):
-        # IMPLEMENT   
+    # Repair action 
     def repair(self,coords: CoordPair):    
         src_unit = self.get(coords.src)
         dst_unit = self.get(coords.dst)
@@ -385,12 +397,19 @@ class Game:
         #add repair amount from the Units
         dst_unit.mod_health(+(health_boost))
         
-
-    
-
     # Self-destruct action
-    #def selfdestruct(self, coords: CoordPair):
-        # IMPLEMENT        
+    def selfdestruct(self, coords: CoordPair):
+        # Unit object for source
+        src_unit = self.get(coords.src)
+        # subtract all health from source Unit
+        src_unit.mod_health(-9)
+        # make list of adjacent and diagonal spots
+        adjacent_and_diagonal = coords.src.iter_adjacent_and_diagonal()
+        # remove health from adjacent and diagonal spots (if occupied)
+        for coord in adjacent_and_diagonal:
+            unit = self.get(coord)
+            if unit is not None:
+                unit.mod_health(-2)        
 
     # Attack action
     def attack(self, coords: CoordPair):
