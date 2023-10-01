@@ -710,9 +710,6 @@ def main():
 
     # set up game options
     options = Options(game_type=game_type)
-    
-    
-
 
     # override class defaults via command line options
     if args.max_depth is not None:
@@ -735,11 +732,6 @@ def main():
     out_file.write(" --- INITIAL BOARD CONFIG ---\n")
     out_file.write(game.init_config_to_string())
 
-    print("num of turns" + game.options.max_turns)
-
-    print(game.options.max_turns)
-    
-
     # the main game loop
     while True:
         print()
@@ -754,6 +746,7 @@ def main():
             break
         if game.options.game_type == GameType.AttackerVsDefender:
             game.human_turn()
+            # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:

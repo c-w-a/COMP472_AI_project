@@ -1,7 +1,7 @@
 
  --- GAME PARAMETERS --- 
-t = 20.0s
-max # of turns: 100
+t = 11.0s
+max # of turns: 37
 
  --- INITIAL BOARD CONFIG ---
 
