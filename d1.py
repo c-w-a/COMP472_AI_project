@@ -489,7 +489,7 @@ class Game:
             output += "\n"
         return output
     
-    def init_config_to_string(self) -> str:
+    def board_config_to_string(self) -> str:
         dim = self.options.dim
         coord = Coord()
         output = ""
@@ -728,11 +728,11 @@ def main():
     game = Game(options=options)
 
     # start writing relevant info to output file
-    out_file.write("\n --- GAME PARAMETERS --- \n")
+    out_file.write("\n --- GAME PARAMETERS --- \n\n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
     out_file.write("max # of turns: " + str(game.options.max_turns) + "\n\n")
-    out_file.write(" --- INITIAL BOARD CONFIG ---\n")
-    out_file.write(game.init_config_to_string())
+    out_file.write("\n --- INITIAL BOARD CONFIG ---\n")
+    out_file.write(game.board_config_to_string())
 
     # the main game loop
     while True:
@@ -742,13 +742,19 @@ def main():
         if winner is not None:
             print(f"{winner.name} wins!")
             # print it to the output file too
-            out_file.write("\n --- WINNER --- \n")
-            out_file.write(winner.name + " wins in " + str(game.turns_played) + " turns!")
+            out_file.write("\n\n --- WINNER --- \n\n")
+            out_file.write(winner.name + " wins in " + str(game.turns_played))
+            if game.turns_played == 1:
+                out_file.write(" turn!\n")
+            else:
+                out_file.write(" turns!\n")
             break
         if game.options.game_type == GameType.AttackerVsDefender:
             game.human_turn()
-            out_file.write("\n --- CURRENT BOARD CONFIG ---\n")
-            out_file.write(game.to_string())
+            out_file.write("\n\n --- TURNS ---\n\n")
+            out_file.write("turn #" + str(game.turns_played) + "\n")
+            out_file.write("player: " + str(game.next_player)[7:] + "\n")
+            out_file.write(game.board_config_to_string())
             # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
