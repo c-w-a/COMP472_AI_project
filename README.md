@@ -1,6 +1,8 @@
 # COMP472_AI_project
 repository for COMP472 (Artificial Intelligence) project
 
+repo: https://github.com/c-w-a/COMP472_AI_project
+
 RUN THE GAME FROM TERMINAL:
 
   with default settings:
