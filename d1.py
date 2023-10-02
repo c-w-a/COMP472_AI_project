@@ -439,19 +439,19 @@ class Game:
             # Movement: (destination is empty)
             if unit == None: 
                 self.movement(coords)
-                return (True, "Successfully moved")
+                return (True, 'move from ' + str(coords.src) + ' to ' + str(coords.dst))
             # Self-destruct: (destination is same as source)
             elif unit.player == self.next_player and coords.src == coords.dst:
                 self.selfdestruct(coords)
-                return (True, "Succesful self-destruct")
+                return (True, 'player at ' + str(coords.src) + ' did a self-destruct')
             # Repair: (destination occupied by a teammate)
             elif unit.player == self.next_player:
                 self.repair(coords)
-                return (True, "Succesful repair")
+                return (True, 'player at ' + str(coords.src) + ' repaired teammate at ' + str(coords.dst))
             # Attack: (destination occupied by other player)
             elif unit.player != self.next_player:
                 self.attack(coords)
-                return (True, "Succesful attack")
+                return (True, 'player at ' + str(coords.src) + ' attacked opponent at ' + str(coords.dst))
         return (False, "Invalid move")
     
     
@@ -489,7 +489,7 @@ class Game:
             output += "\n"
         return output
     
-    def init_config_to_string(self) -> str:
+    def board_config_to_string(self) -> str:
         dim = self.options.dim
         coord = Coord()
         output = ""
@@ -534,7 +534,7 @@ class Game:
             else:
                 print('Invalid coordinates! Try again.')
     
-    def human_turn(self):
+    def human_turn(self) -> str:
         """Human player plays a move (or get via broker)."""
         if self.options.broker is not None:
             print("Getting next move with auto-retry from game broker...")
@@ -556,7 +556,7 @@ class Game:
                     print(f"Player {self.next_player.name}: ",end='')
                     print(result)
                     self.next_turn()
-                    break
+                    return result
                 else:
                     print("The move is not valid! Try again.")
 
@@ -728,11 +728,12 @@ def main():
         # make a file to write output to
     out_file = open('gameTrace.txt', 'w')
     # start writing relevant info to output file
-    out_file.write("\n --- GAME PARAMETERS --- \n")
+    out_file.write("\n --- GAME PARAMETERS --- \n\n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
     out_file.write("max # of turns: " + str(game.options.max_turns) + "\n\n")
-    out_file.write(" --- INITIAL BOARD CONFIG ---\n")
-    out_file.write(game.init_config_to_string())
+    out_file.write("\n --- INITIAL BOARD CONFIG ---\n")
+    out_file.write(game.board_config_to_string())
+    out_file.write('\n\n --- TURNS ---\n\n')
 
     # the main game loop
     while True:
@@ -742,15 +743,24 @@ def main():
         if winner is not None:
             print(f"{winner.name} wins!")
             # print it to the output file too
-            out_file.write("\n --- WINNER --- \n")
-            out_file.write(winner.name + " wins in " + str(game.turns_played) + " turns!")
+            out_file.write('\n --- WINNER --- \n\n')
+            out_file.write(winner.name + ' wins in ' + str(game.turns_played))
+            if game.turns_played == 1:
+                out_file.write(' turn!\n')
+            else:
+                out_file.write(' turns!\n')
             break
         if game.options.game_type == GameType.AttackerVsDefender:
-            game.human_turn()
-            out_file.write("\n --- CURRENT BOARD CONFIG ---\n")
-            out_file.write(game.to_string())
-           
-            
+            result = game.human_turn()
+            out_file.write('turn #' + str(game.turns_played) + '\n')
+            if game.next_player == Player.Attacker:
+                player = 'Defender'
+            else:
+                player = 'Attacker'
+            out_file.write('player: ' + player + '\n')
+            out_file.write('action: ' + result)
+            out_file.write(game.board_config_to_string() + '\n')
+            # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
