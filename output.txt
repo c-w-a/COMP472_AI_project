@@ -1,9 +1,7 @@
-<<<<<<< HEAD
-=======
 
  --- GAME PARAMETERS --- 
-t = 11.0s
-max # of turns: 37
+t = 5.0s
+max # of turns: 2
 
  --- INITIAL BOARD CONFIG ---
 
@@ -14,6 +12,27 @@ C: dF9  .   .   .  aP9
 D:  .   .   .  aF9 aV9 
 E:  .   .  aP9 aV9 aA9 
 
+ --- CURRENT BOARD CONFIG ---
+Next player: Defender
+Turns played: 1
+
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT9 dP9  .   .   .  
+C: dF9  .   .   .  aP9 
+D:  .   .   .  aF7 aV9 
+E:  .   .   .  aV7 aA9 
+
+ --- CURRENT BOARD CONFIG ---
+Next player: Attacker
+Turns played: 2
+
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT7 dP7  .   .   .  
+C:  .   .   .   .  aP9 
+D:  .   .   .  aF7 aV9 
+E:  .   .   .  aV7 aA9 
+
  --- WINNER --- 
-Defender wins in 1 turns!
->>>>>>> origin/main
+Defender wins in 2 turns!

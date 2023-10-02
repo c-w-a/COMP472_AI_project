@@ -453,6 +453,8 @@ class Game:
                 self.attack(coords)
                 return (True, "Succesful attack")
         return (False, "Invalid move")
+    
+    
 
     def next_turn(self):
         """Transitions game to the next turn."""
@@ -742,10 +744,11 @@ def main():
             # print it to the output file too
             out_file.write("\n --- WINNER --- \n")
             out_file.write(winner.name + " wins in " + str(game.turns_played) + " turns!")
-            out_file.close()
             break
         if game.options.game_type == GameType.AttackerVsDefender:
             game.human_turn()
+            out_file.write("\n --- CURRENT BOARD CONFIG ---\n")
+            out_file.write(game.to_string())
             # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
