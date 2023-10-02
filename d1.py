@@ -685,8 +685,7 @@ class Game:
 ##############################################################################################################
 
 def main():
-
-
+    
     # parse command line arguments
     parser = argparse.ArgumentParser(
         prog='ai_wargame',
@@ -725,8 +724,11 @@ def main():
 
     # create a new game
     game = Game(options=options)
-        # make a file to write output to
-    out_file = open('gameTrace.txt', 'w')
+
+    # make a file to write output to
+    filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'
+    out_file = open(filename, 'w')
+
     # start writing relevant info to output file
     out_file.write("\n --- GAME PARAMETERS --- \n\n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
