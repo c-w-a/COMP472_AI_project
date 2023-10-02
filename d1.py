@@ -685,8 +685,7 @@ class Game:
 ##############################################################################################################
 
 def main():
-    # make a file to write output to
-    out_file = open('output.txt', 'w')
+
 
     # parse command line arguments
     parser = argparse.ArgumentParser(
@@ -726,7 +725,8 @@ def main():
 
     # create a new game
     game = Game(options=options)
-
+        # make a file to write output to
+    out_file = open('gameTrace.txt', 'w')
     # start writing relevant info to output file
     out_file.write("\n --- GAME PARAMETERS --- \n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
@@ -749,7 +749,8 @@ def main():
             game.human_turn()
             out_file.write("\n --- CURRENT BOARD CONFIG ---\n")
             out_file.write(game.to_string())
-            # ADD STUFF HERE
+           
+            
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
