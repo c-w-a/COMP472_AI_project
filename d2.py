@@ -442,10 +442,12 @@ class Game:
         src_unit = self.get(coords.src)
         dst_unit = self.get(coords.dst)
         # damage amount for source attack on target
-        damage = src_unit.damage_amount(dst_unit)
+        damage_to_dst = src_unit.damage_amount(dst_unit)
+        # damage amount for targets return attack
+        damage_to_src = dst_unit.damage_amount(src_unit)
         # subtract damage amount from the Units
-        src_unit.mod_health(-(damage))
-        dst_unit.mod_health(-(damage))
+        src_unit.mod_health(-(damage_to_src))
+        dst_unit.mod_health(-(damage_to_dst))
 
     ####################
        
