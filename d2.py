@@ -65,6 +65,7 @@ class Unit:
     player: Player = Player.Attacker
     type: UnitType = UnitType.Program
     health : int = 9
+    Max_health: int = 9
     # class variable: damage table for units (based on the unit type constants in order)
     damage_table : ClassVar[list[list[int]]] = [
         [3,3,3,3,1], # AI
@@ -398,7 +399,13 @@ class Game:
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
                     if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
-                        return False          
+                        return False        
+
+                #cannot repair a team mate with full health, not a valid move
+                src_unit = self.get(coords.src)
+                dst_unit = self.get(coords.dst)
+                if dst_unit and dst_unit.player == self.next_player and dst_unit == unit.Max_health:
+                    return False
         return True
 
     ###   ACTIONS   ###
