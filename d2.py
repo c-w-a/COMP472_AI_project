@@ -256,6 +256,7 @@ class Options:
     max_turns : int | None = 100
     randomize_moves : bool = True
     broker : str | None = None
+    search_depth : int = 4
 
 ##############################################################################################################
 
@@ -277,7 +278,7 @@ class Game:
     stats: Stats = field(default_factory=Stats)
     _attacker_has_ai : bool = True
     _defender_has_ai : bool = True
-    max
+    
 
     def __post_init__(self):
         """Automatically called after class init to set up the default board state."""
@@ -599,13 +600,12 @@ class Game:
         """Check if the game is over and returns winner"""
         if self.options.max_turns is not None and self.turns_played >= self.options.max_turns:
             return Player.Defender
-        elif self._attacker_has_ai:
+        if self._attacker_has_ai:
             if self._defender_has_ai:
                 return None
             else:
                 return Player.Attacker    
-        elif self._defender_has_ai:
-            return Player.Defender
+        return Player.Defender
 
     def move_candidates(self) -> Iterable[CoordPair]:
         """Generate valid move candidates for the next player."""
@@ -627,15 +627,93 @@ class Game:
             return (0, move_candidates[0], 1)
         else:
             return (0, None, 0)
+        
 
+
+
+
+    def e0(self) -> int:
+        if(self.next_player == Player.Attacker):
+            attackerUnits = self.player_units(self.next_player)
+            defenderUnits = self.player_units(self.next_player.next())
+        else:
+            defenderUnits = self.player_units(self.next_player)
+            attackerUnits = self.player_units(self.next_player.next())
+        
+        attackerScore = 0
+        defenderScore = 0
+        score = 0
+
+        for coordinates, units in attackerUnits:
+            if Unit.type == UnitType.AI:
+                attackerScore += 100
+            elif Unit.type == UnitType.Tech:
+                attackerScore += 50
+            elif Unit.type == UnitType.Virus:
+                attackerScore += 10
+            elif Unit.type == UnitType.Program:
+                attackerScore += 20
+            elif Unit.type == UnitType.Firewall:
+                attackerScore += 5
+        
+        for coordinates, units in defenderUnits:
+            if Unit.type == UnitType.AI:
+                defenderScore += 100
+            elif Unit.type == UnitType.Tech:
+                defenderScore += 50
+            elif Unit.type == UnitType.Virus:
+                defenderScore += 10
+            elif Unit.type == UnitType.Program:
+                defenderScore += 20
+            elif Unit.type == UnitType.Firewall:
+                defenderScore += 5
+
+        score = attackerScore - defenderScore
+        return score
+
+    
+    def minimax(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
+        if depth == 0 or self.is_finished():
+            return (self.e0(), None, depth)
+        if maximizing_player:
+            max_eval = MIN_HEURISTIC_SCORE
+            moves = list(self.move_candidates())
+            best_move = None
+            for move in moves:
+                game_state = self.clone()
+                game_state.perform_move(move)
+                eval = game_state.minimax(depth - 1, alpha, beta, False)[0] 
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+            return (max_eval, best_move, depth)
+        else:
+            min_eval = MAX_HEURISTIC_SCORE
+            moves = list(self.move_candidates())
+            best_move = None
+            for move in moves:
+                game_state = self.clone()
+                game_state.perform_move(move)
+                eval = game_state.minimax(depth - 1, alpha, beta, True)[0]
+                if eval < min_eval:
+                    min_eval = eval
+                    best_move = move
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+            return (min_eval, best_move, depth)
+
+        
     def suggest_move(self) -> CoordPair | None:
-        """Suggest the next move using minimax alpha beta. TODO: REPLACE RANDOM_MOVE WITH PROPER GAME LOGIC!!!"""
+        """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
-        (score, move, avg_depth) = self.random_move()
+        (score, move, avg_depth) = self.minimax(3, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE, True)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")
-        print(f"Average recursive depth: {avg_depth:0.1f}")
         print(f"Evals per depth: ",end='')
         for k in sorted(self.stats.evaluations_per_depth.keys()):
             print(f"{k}:{self.stats.evaluations_per_depth[k]} ",end='')
@@ -736,6 +814,7 @@ def main():
 
     # create a new game
     game = Game(options=options)
+
 
     # make a file to write output to
     filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'
