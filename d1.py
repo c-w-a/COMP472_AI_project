@@ -362,7 +362,7 @@ class Game:
         
         
         # validate that the movement is valid (if destination is an open spot)
-        unit = self.get(coords.dst)                                                         #Checks to see if there is unit at destination.
+        unit = self.get(coords.dst)                                                       #Checks to see if there is unit at destination.
         if unit is None:
             adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
             unit = self.get(coords.src)
