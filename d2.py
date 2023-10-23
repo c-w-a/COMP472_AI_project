@@ -1,7 +1,9 @@
 # STUFF TO DO:
-# - make more heuristics e1 and e2 and e3
+# - make heuristic e3
 # - confirm little things are connected (heuristic choice, etc.)
-# - make little start-up menu if there's time?
+# - 'hook up' max_time to AI turns
+# - console stats for each turn aren't showing up?
+# - add AI info for each turn to file output
 # - test
 
 # DELIVERABLE 2
@@ -700,8 +702,7 @@ class Game:
         defenderPower = sum([ATTACK_POINTS[unit.type] for coord, unit in defenderUnits])
 
         # Return the unit advantage
-        return attackerPower - defenderPower
-        
+        return attackerPower + defenderPower
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
