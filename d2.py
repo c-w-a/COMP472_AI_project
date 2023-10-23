@@ -378,7 +378,7 @@ class Game:
                
                
                 # AI, Firewall, or Program cannot move if engaged in combat
-                if any(unit for unit in adversarial_units if unit.player != unit.player):
+                if any(adj_unit for adj_unit in adversarial_units if unit.player != unit.player):
                     return False
                 
                 
@@ -397,7 +397,7 @@ class Game:
                 
         elif unit is not None:
             if unit.player==self.next_player:
-                if unit.health==unit.Max_health:
+                if coords.src != coords.dst and unit.health==unit.Max_health:
                     return False
         return True
 
@@ -621,6 +621,7 @@ class Game:
                     yield move.clone()
             
 
+
     def random_move(self) -> Tuple[int, CoordPair | None, float]:
         """Returns a random move."""
         move_candidates = list(self.move_candidates())
@@ -629,6 +630,8 @@ class Game:
             return (0, move_candidates[0], 1)
         else:
             return (0, None, 0)
+        
+        
 
     def e0(self) -> int:
         if(self.next_player == Player.Attacker):
@@ -668,10 +671,40 @@ class Game:
 
         score = attackerScore - defenderScore
         return score
+    
+    #kamikaze method
+    def e1(self) -> int:
+
+        # Define attack values for each unit
+        ATTACK_POINTS = {
+            UnitType.AI: 2,
+            UnitType.Tech: 3,
+            UnitType.Virus: 9,
+            UnitType.Program: 4,
+            UnitType.Firewall: 2
+        }
+
+        # Determine which units belong to the attacker and which belong to the defender
+        if self.next_player == Player.Attacker:
+            attackerUnits = self.player_units(self.next_player)
+            defenderUnits = self.player_units(self.next_player.next())
+        else:
+            defenderUnits = self.player_units(self.next_player)
+            attackerUnits = self.player_units(self.next_player.next())
+
+        # Calculate total attack power for attacker
+        attackerPower = sum([ATTACK_POINTS[unit.type] for coord, unit in attackerUnits])
+
+        # Calculate total attack power for defender
+        defenderPower = sum([ATTACK_POINTS[unit.type] for coord, unit in defenderUnits])
+
+        # Return the unit advantage
+        return attackerPower - defenderPower
+        
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e0(), None, depth)
+            return (self.e1(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
@@ -705,7 +738,7 @@ class Game:
 
     def minimax(self, depth: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e0(), None, depth)
+            return (self.e1(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
@@ -735,7 +768,25 @@ class Game:
     def suggest_move_minimax(self) -> CoordPair | None:
         """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
-        (score, move, avg_depth) = self.minimax(3, True)
+        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
+        elapsed_seconds = (datetime.now() - start_time).total_seconds()
+        self.stats.total_seconds += elapsed_seconds
+        print(f"Heuristic score: {score}")
+        print(f"Evals per depth: ",end='')
+        for k in sorted(self.stats.evaluations_per_depth.keys()):
+            print(f"{k}:{self.stats.evaluations_per_depth[k]} ",end='')
+        print()
+        total_evals = sum(self.stats.evaluations_per_depth.values())
+        if self.stats.total_seconds > 0:
+            print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
+        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
+        return move
+    
+    def suggest_move_alphabeta(self) -> CoordPair | None:
+        """Suggest the next move using minimax alpha beta."""
+        start_time = datetime.now()
+        (score, move, avg_depth) = self.alpha_beta(3, float('-inf'), float('inf'), True)
+        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")

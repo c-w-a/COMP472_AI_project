@@ -3,9 +3,7 @@
 
 t = 5.0s
 max # of turns: 100
-play mode: CompVsComp
-alpha-beta: False
-heuristic: E0
+play mode: AttackerVsDefender
 
 
  --- INITIAL BOARD CONFIG ---
@@ -20,7 +18,3 @@ E:  .   .  aP9 aV9 aA9
 
  --- TURNS ---
 
-
- --- WINNER --- 
-
-Attacker wins in 73 turns!
