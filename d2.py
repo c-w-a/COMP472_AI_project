@@ -576,7 +576,10 @@ class Game:
 
     def computer_turn(self) -> CoordPair | None:
         """Computer plays a move."""
-        mv = self.suggest_move()
+        if self.options.alpha_beta == False:
+            mv = self.suggest_move_minimax()
+        elif self.options.alpha_beta == True:
+            mv = self.suggest_move_alphabeta()
         if mv is not None:
             (success,result) = self.perform_move(mv)
             if success:
@@ -700,8 +703,6 @@ class Game:
                     break
             return (min_eval, best_move, depth)
 
-
-
     def minimax(self, depth: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
             return (self.e0(), None, depth)
@@ -731,10 +732,27 @@ class Game:
             return (min_eval, best_move, depth)
 
         
-    def suggest_move(self) -> CoordPair | None:
+    def suggest_move_minimax(self) -> CoordPair | None:
         """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
         (score, move, avg_depth) = self.minimax(3, True)
+        elapsed_seconds = (datetime.now() - start_time).total_seconds()
+        self.stats.total_seconds += elapsed_seconds
+        print(f"Heuristic score: {score}")
+        print(f"Evals per depth: ",end='')
+        for k in sorted(self.stats.evaluations_per_depth.keys()):
+            print(f"{k}:{self.stats.evaluations_per_depth[k]} ",end='')
+        print()
+        total_evals = sum(self.stats.evaluations_per_depth.values())
+        if self.stats.total_seconds > 0:
+            print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
+        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
+        return move
+    
+    def suggest_move_alphabeta(self) -> CoordPair | None:
+        """Suggest the next move using minimax alpha beta."""
+        start_time = datetime.now()
+        (score, move, avg_depth) = self.alpha_beta(3, float('-inf'), float('inf'), True)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")
@@ -799,6 +817,14 @@ class Game:
 
 ##############################################################################################################
 
+def str_to_bool(str):
+    if str.lower() in ('true'):
+        return True
+    elif str.lower() in ('false'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def main():
     
     # parse command line arguments
@@ -807,7 +833,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--max_depth', type=int, help='maximum search depthgit pull origin main')
     parser.add_argument('--max_time', type=float, help='maximum search time')
-    parser.add_argument('--alpha_beta', type=bool, help='True to turn on alpha-beta pruning')
+    parser.add_argument('--alpha_beta', type=str_to_bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
