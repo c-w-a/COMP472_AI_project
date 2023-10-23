@@ -4,14 +4,6 @@
 # - make little start-up menu if there's time?
 # - test
 
-# d1 feedback:
-
-# Preliminary Feedback on D1 for team 'Data Wizards' :
-# DEMO: good
-# CODE: use case 1: Had not implemented the engaged in combat scenario, use case 2: good
-#       use case 3: good, output file: D2-C2 should be damage 6, return 3 (i.e, it damages by 6 units and receives a damage of 3 units ). B2-C2 should be an invalid move.
-#       code quality: good
-
 # DELIVERABLE 2
 from __future__ import annotations
 import argparse
@@ -634,10 +626,6 @@ class Game:
             return (0, move_candidates[0], 1)
         else:
             return (0, None, 0)
-        
-
-
-
 
     def e0(self) -> int:
         if(self.next_player == Player.Attacker):
@@ -856,7 +844,6 @@ def main():
 
     # create a new game
     game = Game(options=options)
-
 
     # make a file to write output to
     filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'
