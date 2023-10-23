@@ -1,6 +1,5 @@
 
 # STUFF TO DO:
-# - implement alpha-beta pruning
 # - make more heuristics e1 and e2 at least
 # - fix up the little things so the game parameters work (play modes, alpha-beta true or false, etc.)
 # - test
@@ -777,6 +776,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog='ai_wargame',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--alpha_beta', type=bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_depth', type=int, help='maximum search depthgit pull origin main')
     parser.add_argument('--max_time', type=float, help='maximum search time')
     parser.add_argument('--max_turns', type=int, help='maximum turns')
@@ -798,6 +798,8 @@ def main():
     options = Options(game_type=game_type)
 
     # override class defaults via command line options
+    if args.alpha_beta is not None:
+        options.alpha_beta = args.alpha_beta
     if args.max_depth is not None:
         options.max_depth = args.max_depth
     if args.max_time is not None:
