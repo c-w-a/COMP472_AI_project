@@ -1,20 +1,9 @@
 
 # STUFF TO DO:
-# - fix what working in D1 (i pasted the feedback below)
-# - implement heuristic e0 as a function (will be used by minimax)
-# - implement minimax (probs one of the bigger tasks)
-# - implement alpha-beta pruning (probs one of the harder tasks)
+# - implement alpha-beta pruning
 # - make more heuristics e1 and e2 at least
 # - fix up the little things so the game parameters work (play modes, alpha-beta true or false, etc.)
 # - test
-
-# d1 feedback:
-
-# Preliminary Feedback on D1 for team 'Data Wizards' :
-# DEMO: good
-# CODE: use case 1: Had not implemented the engaged in combat scenario, use case 2: good
-#       use case 3: good, output file: D2-C2 should be damage 6, return 3 (i.e, it damages by 6 units and receives a damage of 3 units ). B2-C2 should be an invalid move.
-#       code quality: good
 
 # DELIVERABLE 2
 from __future__ import annotations
