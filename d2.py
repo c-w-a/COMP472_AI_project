@@ -716,7 +716,7 @@ class Game:
         total_evals = sum(self.stats.evaluations_per_depth.values())
         if self.stats.total_seconds > 0:
             print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
-        print(f"Elapsed time: {elapsed_seconds:0.f}s")
+        print(f"Elapsed time: {elapsed_seconds:.0f}s")
         return move
 
     def post_move_to_broker(self, move: CoordPair):
