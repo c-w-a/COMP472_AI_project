@@ -672,13 +672,39 @@ class Game:
         score = attackerScore - defenderScore
         return score
     
-    # #kamikaze method
-    # def e1(self) -> int: 
+    #kamikaze method
+    def e1(self) -> int:
+
+        # Define attack values for each unit
+        ATTACK_POINTS = {
+            UnitType.AI: 2,
+            UnitType.Tech: 3,
+            UnitType.Virus: 9,
+            UnitType.Program: 4,
+            UnitType.Firewall: 2
+        }
+
+        # Determine which units belong to the attacker and which belong to the defender
+        if self.next_player == Player.Attacker:
+            attackerUnits = self.player_units(self.next_player)
+            defenderUnits = self.player_units(self.next_player.next())
+        else:
+            defenderUnits = self.player_units(self.next_player)
+            attackerUnits = self.player_units(self.next_player.next())
+
+        # Calculate total attack power for attacker
+        attackerPower = sum([ATTACK_POINTS[unit.type] for coord, unit in attackerUnits])
+
+        # Calculate total attack power for defender
+        defenderPower = sum([ATTACK_POINTS[unit.type] for coord, unit in defenderUnits])
+
+        # Return the unit advantage
+        return attackerPower - defenderPower
         
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e0(), None, depth)
+            return (self.e1(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
@@ -712,7 +738,7 @@ class Game:
 
     def minimax(self, depth: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e0(), None, depth)
+            return (self.e1(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
