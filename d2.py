@@ -378,7 +378,7 @@ class Game:
                
                
                 # AI, Firewall, or Program cannot move if engaged in combat
-                if any(unit for unit in adversarial_units if unit.player != unit.player):
+                if any(adj_unit for adj_unit in adversarial_units if unit.player != unit.player):
                     return False
                 
                 
@@ -397,7 +397,7 @@ class Game:
                 
         elif unit is not None:
             if unit.player==self.next_player:
-                if unit.health==unit.Max_health:
+                if coords.src != coords.dst and unit.health==unit.Max_health:
                     return False
         return True
 
@@ -618,6 +618,7 @@ class Game:
                     yield move.clone()
             
 
+
     def random_move(self) -> Tuple[int, CoordPair | None, float]:
         """Returns a random move."""
         move_candidates = list(self.move_candidates())
@@ -626,6 +627,8 @@ class Game:
             return (0, move_candidates[0], 1)
         else:
             return (0, None, 0)
+        
+        
 
     def e0(self) -> int:
         if(self.next_player == Player.Attacker):
@@ -665,6 +668,10 @@ class Game:
 
         score = attackerScore - defenderScore
         return score
+    
+    # #kamikaze method
+    # def e1(self) -> int: 
+        
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
@@ -734,7 +741,7 @@ class Game:
     def suggest_move(self) -> CoordPair | None:
         """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
-        (score, move, avg_depth) = self.minimax(3, True)
+        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")
