@@ -46,6 +46,9 @@ class GameType(Enum):
     CompVsDefender = 2
     CompVsComp = 3
 
+class HeuristicType(Enum):
+    E0 = 0
+
 ##############################################################################################################
 
 @dataclass(slots=True)
@@ -245,6 +248,7 @@ class Options:
     randomize_moves : bool = True
     broker : str | None = None
     search_depth : int = 4
+    heuristic : HeuristicType = HeuristicType.E0
 
 ##############################################################################################################
 
@@ -782,6 +786,7 @@ def main():
     parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
+    parser.add_argument('--heuristic', type=int, help='choose which heuristic to use (0,1, or 2)') 
     args = parser.parse_args()
 
     # parse the game type
@@ -808,6 +813,8 @@ def main():
         options.max_turns = args.max_turns
     if args.broker is not None:
         options.broker = args.broker
+    if args.heuristic is not None:
+        options.heuristic = args.heuristic
 
     # create a new game
     game = Game(options=options)
@@ -819,8 +826,12 @@ def main():
     # start writing relevant info to output file
     out_file.write("\n --- GAME PARAMETERS --- \n\n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
-    out_file.write("max # of turns: " + str(game.options.max_turns) + "\n\n")
-    out_file.write("\n --- INITIAL BOARD CONFIG ---\n")
+    out_file.write("max # of turns: " + str(game.options.max_turns) + "\n")
+    out_file.write("play mode: " + str(game.options.game_type)[9:] + "\n")
+    if game.options.game_type != GameType.AttackerVsDefender:
+        out_file.write("alpha-beta: " + str(game.options.alpha_beta) + "\n")
+        out_file.write("heuristic: " + str(game.options.heuristic)[14:] + "\n")
+    out_file.write("\n\n --- INITIAL BOARD CONFIG ---\n")
     out_file.write(game.board_config_to_string())
     out_file.write('\n\n --- TURNS ---\n\n')
 
