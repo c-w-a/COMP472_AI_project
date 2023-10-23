@@ -1,6 +1,7 @@
 # STUFF TO DO:
-# - make more heuristics e1 and e2 at least
-# - fix up the little things so the game parameters work (play modes, alpha-beta true or false, etc.)
+# - make more heuristics e1 and e2 and e3
+# - confirm little things are connected (heuristic choice, alpha-beta true or false, etc.)
+# - make little start-up menu if there's time?
 # - test
 
 # d1 feedback:
