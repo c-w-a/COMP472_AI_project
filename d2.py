@@ -1,6 +1,6 @@
 # STUFF TO DO:
 # - make more heuristics e1 and e2 and e3
-# - confirm little things are connected (heuristic choice, alpha-beta true or false, etc.)
+# - confirm little things are connected (heuristic choice, etc.)
 # - make little start-up menu if there's time?
 # - test
 
@@ -645,28 +645,28 @@ class Game:
         defenderScore = 0
         score = 0
 
-        for coordinates, units in attackerUnits:
-            if Unit.type == UnitType.AI:
+        for coordinate, unit in attackerUnits:
+            if unit.type == UnitType.AI:
                 attackerScore += 9999
-            elif Unit.type == UnitType.Tech:
+            elif unit.type == UnitType.Tech:
                 attackerScore += 3
-            elif Unit.type == UnitType.Virus:
+            elif unit.type == UnitType.Virus:
                 attackerScore += 3
-            elif Unit.type == UnitType.Program:
+            elif unit.type == UnitType.Program:
                 attackerScore += 3
-            elif Unit.type == UnitType.Firewall:
+            elif unit.type == UnitType.Firewall:
                 attackerScore += 3
         
-        for coordinates, units in defenderUnits:
-            if Unit.type == UnitType.AI:
+        for coordinates, unit in defenderUnits:
+            if unit.type == UnitType.AI:
                 defenderScore += 9999
-            elif Unit.type == UnitType.Tech:
+            elif unit.type == UnitType.Tech:
                 defenderScore += 3
-            elif Unit.type == UnitType.Virus:
+            elif unit.type == UnitType.Virus:
                 defenderScore += 3
-            elif Unit.type == UnitType.Program:
+            elif unit.type == UnitType.Program:
                 defenderScore += 3
-            elif Unit.type == UnitType.Firewall:
+            elif unit.type == UnitType.Firewall:
                 defenderScore += 3
 
         score = attackerScore - defenderScore
@@ -882,7 +882,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog='ai_wargame',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--max_depth', type=int, help='maximum search depthgit pull origin main')
+    parser.add_argument('--max_depth', type=int, help='maximum search depth')
     parser.add_argument('--max_time', type=float, help='maximum search time')
     parser.add_argument('--alpha_beta', type=str_to_bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_turns', type=int, help='maximum turns')
