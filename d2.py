@@ -4,14 +4,6 @@
 # - make little start-up menu if there's time?
 # - test
 
-# d1 feedback:
-
-# Preliminary Feedback on D1 for team 'Data Wizards' :
-# DEMO: good
-# CODE: use case 1: Had not implemented the engaged in combat scenario, use case 2: good
-#       use case 3: good, output file: D2-C2 should be damage 6, return 3 (i.e, it damages by 6 units and receives a damage of 3 units ). B2-C2 should be an invalid move.
-#       code quality: good
-
 # DELIVERABLE 2
 from __future__ import annotations
 import argparse
@@ -386,7 +378,7 @@ class Game:
                
                
                 # AI, Firewall, or Program cannot move if engaged in combat
-                if any(unit for unit in adversarial_units if unit.player != unit.player):
+                if any(adj_unit for adj_unit in adversarial_units if unit.player != unit.player):
                     return False
                 
                 
@@ -405,7 +397,7 @@ class Game:
                 
         elif unit is not None:
             if unit.player==self.next_player:
-                if unit.health==unit.Max_health:
+                if coords.src != coords.dst and unit.health==unit.Max_health:
                     return False
         return True
 
@@ -584,7 +576,10 @@ class Game:
 
     def computer_turn(self) -> CoordPair | None:
         """Computer plays a move."""
-        mv = self.suggest_move()
+        if self.options.alpha_beta == False:
+            mv = self.suggest_move_minimax()
+        elif self.options.alpha_beta == True:
+            mv = self.suggest_move_alphabeta()
         if mv is not None:
             (success,result) = self.perform_move(mv)
             if success:
@@ -626,6 +621,7 @@ class Game:
                     yield move.clone()
             
 
+
     def random_move(self) -> Tuple[int, CoordPair | None, float]:
         """Returns a random move."""
         move_candidates = list(self.move_candidates())
@@ -635,9 +631,7 @@ class Game:
         else:
             return (0, None, 0)
         
-
-
-
+        
 
     def e0(self) -> int:
         if(self.next_player == Player.Attacker):
@@ -677,6 +671,10 @@ class Game:
 
         score = attackerScore - defenderScore
         return score
+    
+    # #kamikaze method
+    # def e1(self) -> int: 
+        
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
@@ -712,8 +710,6 @@ class Game:
                     break
             return (min_eval, best_move, depth)
 
-
-
     def minimax(self, depth: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
             return (self.e0(), None, depth)
@@ -743,10 +739,27 @@ class Game:
             return (min_eval, best_move, depth)
 
         
-    def suggest_move(self) -> CoordPair | None:
+    def suggest_move_minimax(self) -> CoordPair | None:
         """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
-        (score, move, avg_depth) = self.minimax(3, True)
+        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
+        elapsed_seconds = (datetime.now() - start_time).total_seconds()
+        self.stats.total_seconds += elapsed_seconds
+        print(f"Heuristic score: {score}")
+        print(f"Evals per depth: ",end='')
+        for k in sorted(self.stats.evaluations_per_depth.keys()):
+            print(f"{k}:{self.stats.evaluations_per_depth[k]} ",end='')
+        print()
+        total_evals = sum(self.stats.evaluations_per_depth.values())
+        if self.stats.total_seconds > 0:
+            print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
+        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
+        return move
+    
+    def suggest_move_alphabeta(self) -> CoordPair | None:
+        """Suggest the next move using minimax alpha beta."""
+        start_time = datetime.now()
+        (score, move, avg_depth) = self.alpha_beta(3, float('-inf'), float('inf'), True)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")
@@ -811,6 +824,14 @@ class Game:
 
 ##############################################################################################################
 
+def str_to_bool(str):
+    if str.lower() in ('true'):
+        return True
+    elif str.lower() in ('false'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
 def main():
     
     # parse command line arguments
@@ -819,7 +840,7 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--max_depth', type=int, help='maximum search depthgit pull origin main')
     parser.add_argument('--max_time', type=float, help='maximum search time')
-    parser.add_argument('--alpha_beta', type=bool, help='True to turn on alpha-beta pruning')
+    parser.add_argument('--alpha_beta', type=str_to_bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
@@ -856,7 +877,6 @@ def main():
 
     # create a new game
     game = Game(options=options)
-
 
     # make a file to write output to
     filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'

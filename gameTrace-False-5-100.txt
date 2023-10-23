@@ -1,0 +1,30 @@
+
+ --- GAME PARAMETERS --- 
+
+t = 5.0s
+max # of turns: 100
+play mode: AttackerVsDefender
+
+
+ --- INITIAL BOARD CONFIG ---
+
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT9 dP9  .   .   .  
+C: dF9  .   .   .  aP9 
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+
+ --- TURNS ---
+
+turn #1
+player: Attacker
+action: player at C4 did a self-destruct
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT9 dP9  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF7 aV7 
+E:  .   .  aP9 aV9 aA9 
+

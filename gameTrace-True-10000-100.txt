@@ -1,7 +1,7 @@
 
  --- GAME PARAMETERS --- 
 
-t = 5.0s
+t = 10000.0s
 max # of turns: 100
 play mode: CompVsComp
 alpha-beta: True
