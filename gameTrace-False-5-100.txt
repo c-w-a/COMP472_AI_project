@@ -20,4 +20,4 @@ E:  .   .  aP9 aV9 aA9
 
  --- WINNER --- 
 
-Defender wins in 17 turns!
+Attacker wins in 73 turns!

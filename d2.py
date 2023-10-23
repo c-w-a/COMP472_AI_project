@@ -1,8 +1,19 @@
-
 # STUFF TO DO:
+# - fix what working in D1 (i pasted the feedback below)
+# - implement heuristic e0 as a function (will be used by minimax)
+# - implement minimax (probs one of the bigger tasks)
+# - implement alpha-beta pruning (probs one of the harder tasks)
 # - make more heuristics e1 and e2 at least
 # - fix up the little things so the game parameters work (play modes, alpha-beta true or false, etc.)
 # - test
+
+# d1 feedback:
+
+# Preliminary Feedback on D1 for team 'Data Wizards' :
+# DEMO: good
+# CODE: use case 1: Had not implemented the engaged in combat scenario, use case 2: good
+#       use case 3: good, output file: D2-C2 should be damage 6, return 3 (i.e, it damages by 6 units and receives a damage of 3 units ). B2-C2 should be an invalid move.
+#       code quality: good
 
 # DELIVERABLE 2
 from __future__ import annotations
@@ -53,6 +64,7 @@ class Unit:
     player: Player = Player.Attacker
     type: UnitType = UnitType.Program
     health : int = 9
+    Max_health: int = 9
     # class variable: damage table for units (based on the unit type constants in order)
     damage_table : ClassVar[list[list[int]]] = [
         [3,3,3,3,1], # AI
@@ -267,6 +279,7 @@ class Game:
     _attacker_has_ai : bool = True
     _defender_has_ai : bool = True
     
+
     def __post_init__(self):
         """Automatically called after class init to set up the default board state."""
         dim = self.options.dim
@@ -337,32 +350,20 @@ class Game:
             target.mod_health(health_delta)
             self.remove_dead(coord)
 
-    # checks if src coord is engaged in combat if it's trying to move
-    def engaged_in_combat(self, coord: Coord) -> bool:
-        
-        adjacent = coord.iter_adjacent()
-        enemies = False
-
-        for spot in adjacent:
-            if self.get(spot) != None and self.get(spot).player != self.next_player:
-                enemies = True
-
-        if enemies:
-            return True
-        else:
-            return False
-
     def is_valid_move(self, coords: CoordPair) -> bool:
         "Validate a move expressed as a CoordPair."
         # validate that the coordinates (source and destination) are valid
         if not self.is_valid_coord(coords.src) or not self.is_valid_coord(coords.dst):        #Checks if coord at source is valid and if coord at destination is valid
             return False
        
+       
         # validate that the source coordinate is occupied by the current player
-        unit = self.get(coords.src)                                              #Checks what unit is at source using "get" method
-        if unit is None or unit.player != self.next_player:                      #Checks if there is NO unit at soruce or checks if the player of the unit is not the same as the next player whose supposed to make the move
+        unit = self.get(coords.src)                                                             #Checks what unit is at source using "get" method
+        if unit is None or unit.player != self.next_player:                                       #Checks if there is NO unit at soruce or checks if the player of the unit is not the same as the next player whose supposed to make the move
             return False
-
+        # validate that the move is to an adjacent space (or to same space)
+        
+        
         # validate that the move is to an adjacent space
         adjacent_coords = coords.src.iter_adjacent()
         adjacentMove = False
@@ -381,16 +382,30 @@ class Game:
             adversarial_units = [self.get(coord) for coord in adjacent_coords if self.is_valid_coord(coord) and self.get(coord) is not None]
             unit = self.get(coords.src)
             if unit.type in (UnitType.AI, UnitType.Firewall, UnitType.Program):
+               
+               
+                # AI, Firewall, or Program cannot move if engaged in combat
+                if any(unit for unit in adversarial_units if unit.player != unit.player):
+                    return False
+                
                 
                 # Attacker's AI, Firewall, or Program can only move up or left
                 if unit.player == Player.Attacker:
                     if coords.src.row < coords.dst.row or coords.src.col < coords.dst.col:
                         return False
                 
+                
                 # Defender's AI, Firewall, or Program can only move down or right
                 else:
                     if coords.src.row > coords.dst.row or coords.src.col > coords.dst.col:
-                        return False          
+                        return False        
+
+                #cannot repair a team mate with full health, not a valid move
+                
+        elif unit is not None:
+            if unit.player==self.next_player:
+                if unit.health==unit.Max_health:
+                    return False
         return True
 
     ###   ACTIONS   ###
@@ -430,12 +445,10 @@ class Game:
         src_unit = self.get(coords.src)
         dst_unit = self.get(coords.dst)
         # damage amount for source attack on target
-        damage_to_dst = src_unit.damage_amount(dst_unit)
-        # damage amount for targets return attack
-        damage_to_src = dst_unit.damage_amount(src_unit)
+        damage = src_unit.damage_amount(dst_unit)
         # subtract damage amount from the Units
-        src_unit.mod_health(-(damage_to_src))
-        dst_unit.mod_health(-(damage_to_dst))
+        src_unit.mod_health(-(damage))
+        dst_unit.mod_health(-(damage))
 
     ####################
        
@@ -445,12 +458,7 @@ class Game:
         if self.is_valid_move(coords):
             unit = self.get(coords.dst)
             # Movement: (destination is empty)
-            if unit == None:
-                # if AI, Firewall, or Program -- check if engaged in combat, return without moving if so
-                if self.get(coords.src).type == UnitType.AI or self.get(coords.src).type == UnitType.Firewall or self.get(coords.src).type == UnitType.Program:
-                    flag = self.engaged_in_combat(coords.src)
-                    if flag == True:
-                        return (False, "Invalid move -- engaged in combat!")
+            if unit == None: 
                 self.movement(coords)
                 return (True, 'move from ' + str(coords.src) + ' to ' + str(coords.dst))
             # Self-destruct: (destination is same as source)
@@ -465,7 +473,9 @@ class Game:
             elif unit.player != self.next_player:
                 self.attack(coords)
                 return (True, 'player at ' + str(coords.src) + ' attacked opponent at ' + str(coords.dst))
-        return (False, "Invalid move")    
+        return (False, "Invalid move")
+    
+    
 
     def next_turn(self):
         """Transitions game to the next turn."""
@@ -613,8 +623,7 @@ class Game:
                 move.dst = dst
                 if self.is_valid_move(move):
                     yield move.clone()
-            move.dst = src
-            yield move.clone()
+            
 
     def random_move(self) -> Tuple[int, CoordPair | None, float]:
         """Returns a random move."""
@@ -626,7 +635,9 @@ class Game:
             return (0, None, 0)
         
 
-    # this is the implementation of heuristic e0
+
+
+
     def e0(self) -> int:
         if(self.next_player == Player.Attacker):
             attackerUnits = self.player_units(self.next_player)
@@ -641,32 +652,32 @@ class Game:
 
         for coordinates, units in attackerUnits:
             if Unit.type == UnitType.AI:
-                attackerScore += 100
+                attackerScore += 9999
             elif Unit.type == UnitType.Tech:
-                attackerScore += 50
+                attackerScore += 3
             elif Unit.type == UnitType.Virus:
-                attackerScore += 10
+                attackerScore += 3
             elif Unit.type == UnitType.Program:
-                attackerScore += 20
+                attackerScore += 3
             elif Unit.type == UnitType.Firewall:
-                attackerScore += 5
+                attackerScore += 3
         
         for coordinates, units in defenderUnits:
             if Unit.type == UnitType.AI:
-                defenderScore += 100
+                defenderScore += 9999
             elif Unit.type == UnitType.Tech:
-                defenderScore += 50
+                defenderScore += 3
             elif Unit.type == UnitType.Virus:
-                defenderScore += 10
+                defenderScore += 3
             elif Unit.type == UnitType.Program:
-                defenderScore += 20
+                defenderScore += 3
             elif Unit.type == UnitType.Firewall:
-                defenderScore += 5
+                defenderScore += 3
 
         score = attackerScore - defenderScore
         return score
 
-    # minimax implementation
+    
     def minimax(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
             return (self.e0(), None, depth)
@@ -716,7 +727,7 @@ class Game:
         total_evals = sum(self.stats.evaluations_per_depth.values())
         if self.stats.total_seconds > 0:
             print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
-        print(f"Elapsed time: {elapsed_seconds:.0f}s")
+        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
         return move
 
     def post_move_to_broker(self, move: CoordPair):
@@ -776,9 +787,9 @@ def main():
     parser = argparse.ArgumentParser(
         prog='ai_wargame',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--alpha_beta', type=bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_depth', type=int, help='maximum search depthgit pull origin main')
     parser.add_argument('--max_time', type=float, help='maximum search time')
+    parser.add_argument('--alpha_beta', type=bool, help='True to turn on alpha-beta pruning')
     parser.add_argument('--max_turns', type=int, help='maximum turns')
     parser.add_argument('--game_type', type=str, default="manual", help='game type: auto|attacker|defender|manual')
     parser.add_argument('--broker', type=str, help='play via a game broker')
@@ -794,14 +805,15 @@ def main():
     else:
         game_type = GameType.CompVsComp
 
+
     # set up game options
     options = Options(game_type=game_type)
 
     # override class defaults via command line options
-    if args.alpha_beta is not None:
-        options.alpha_beta = args.alpha_beta
     if args.max_depth is not None:
         options.max_depth = args.max_depth
+    if args.alpha_beta is not None:
+        options.alpha_beta = args.alpha_beta
     if args.max_time is not None:
         options.max_time = args.max_time
     if args.max_turns is not None:
@@ -811,6 +823,7 @@ def main():
 
     # create a new game
     game = Game(options=options)
+
 
     # make a file to write output to
     filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'
@@ -849,6 +862,7 @@ def main():
             out_file.write('player: ' + player + '\n')
             out_file.write('action: ' + result)
             out_file.write(game.board_config_to_string() + '\n')
+            # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
