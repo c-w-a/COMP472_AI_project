@@ -48,6 +48,7 @@ class GameType(Enum):
 
 class HeuristicType(Enum):
     E0 = 0
+    E1 = 1
 
 ##############################################################################################################
 
@@ -704,7 +705,7 @@ class Game:
 
     def alpha_beta(self, depth: int, alpha: int, beta: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e1(), None, depth)
+            return (self.e0(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
@@ -738,7 +739,7 @@ class Game:
 
     def minimax(self, depth: int, maximizing_player: bool) -> Tuple[int, CoordPair | None, float]:
         if depth == 0 or self.is_finished():
-            return (self.e1(), None, depth)
+            return (self.e0(), None, depth)
         if maximizing_player:
             max_eval = MIN_HEURISTIC_SCORE
             moves = list(self.move_candidates())
@@ -768,25 +769,7 @@ class Game:
     def suggest_move_minimax(self) -> CoordPair | None:
         """Suggest the next move using minimax alpha beta."""
         start_time = datetime.now()
-        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
-        elapsed_seconds = (datetime.now() - start_time).total_seconds()
-        self.stats.total_seconds += elapsed_seconds
-        print(f"Heuristic score: {score}")
-        print(f"Evals per depth: ",end='')
-        for k in sorted(self.stats.evaluations_per_depth.keys()):
-            print(f"{k}:{self.stats.evaluations_per_depth[k]} ",end='')
-        print()
-        total_evals = sum(self.stats.evaluations_per_depth.values())
-        if self.stats.total_seconds > 0:
-            print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
-        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
-        return move
-    
-    def suggest_move_alphabeta(self) -> CoordPair | None:
-        """Suggest the next move using minimax alpha beta."""
-        start_time = datetime.now()
-        (score, move, avg_depth) = self.alpha_beta(3, float('-inf'), float('inf'), True)
-        (score, move, avg_depth) = self.alpha_beta(3, True, MIN_HEURISTIC_SCORE, MAX_HEURISTIC_SCORE)
+        (score, move, avg_depth) = self.minimax(3, True)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
         self.stats.total_seconds += elapsed_seconds
         print(f"Heuristic score: {score}")
@@ -868,6 +851,7 @@ class Game:
 
 ##############################################################################################################
 
+# this turns the string argument to a bool for alpha beta
 def str_to_bool(str):
     if str.lower() in ('true'):
         return True
