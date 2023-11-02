@@ -873,6 +873,7 @@ def main():
         print()
         print(game)
         winner = game.has_winner()
+        # print out winner if there is one!
         if winner is not None:
             print(f"{winner.name} wins!")
             out_file.write('\n --- WINNER --- \n\n')
@@ -882,6 +883,7 @@ def main():
             else:
                 out_file.write(' turns!\n')
             break
+        
         if game.options.game_type == GameType.AttackerVsDefender:
             result = game.human_turn()
             if game.next_player == Player.Attacker:
@@ -906,7 +908,19 @@ def main():
         out_file.write('turn #' + str(game.turns_played) + '\n')
         out_file.write('player: ' + player + '\n')
         out_file.write('action: ' + result)
+        # if a player is AI:
+        #      AI turn time in seconds (ex. 0.4s)
+        #      AI heuristic score
+
+        # if a game has an AI:
+        #      cumulative evals
+        #      cumulative evals per depth
+        #      cumulative evals per depth %
+        #      average branching factor
+
         out_file.write(game.board_config_to_string() + '\n')
+        
+
 
 ##############################################################################################################
 
