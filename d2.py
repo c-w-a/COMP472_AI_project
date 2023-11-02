@@ -740,8 +740,6 @@ class Game:
             print(
                 f"{self.next_player.name} has taken too much time, {self.next_player.next().name} wins!")
         self.stats.total_seconds += elapsed_seconds
-        file.write(f"\n{self.next_player.next().name} wins in {self.turns_played}")
-        file.close()
         print(f"Suggested move: {move} with score of {score} ")
         print(f"Heuristic score: {self.e0()}")
         print(f"Evals per depth: ", end="")
