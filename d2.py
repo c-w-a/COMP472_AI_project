@@ -1,3 +1,10 @@
+# TODO:
+# - get it printing all the right info to output file and the console
+# - double check AI time limit!
+# - double check AI makes invalid move -> game over!
+# - troubleshoot heuristics, minimax, alpha beta, etc. if need be
+
+
 # DELIVERABLE 2
 from __future__ import annotations
 import argparse
@@ -271,7 +278,9 @@ class Game:
     stats: Stats = field(default_factory=Stats)
     ai_attacker : bool = True
     ai_defender : bool = True
-    
+    cumulative_evals : int = 0
+    # add attributes to keep track of info needed for branching factor, etc.
+
 
     def __post_init__(self):
         dim = self.options.dim
@@ -584,6 +593,7 @@ class Game:
         
 
     def e0(self) -> int:
+        self.cumulative_evals = self.cumulative_evals + 1
         attackerScore = 0
         defenderScore = 0
         score = 0
@@ -652,9 +662,7 @@ class Game:
 
         return kamikaze_score
 
-    
 
-    
     def e_total(self) -> int:
         """Returns the total heuristic score."""
         return self.e0()
@@ -697,23 +705,30 @@ class Game:
             return (min_eval, minMove)
 
 
-
+    # needs to return the move too
     def minimax(self, depth, maximizing_player):
+        move = None
+        
         if depth == 0 or self.is_finished():
             return self.e0()
 
         if maximizing_player:
             max_eval = float("-inf")
-            for (child) in self.get_leaf(Player.Attacker):
-                eval = child.minimax(depth - 1, False)
-                max_eval = max(max_eval, eval)
-            return max_eval
+            children = self.get_leaf(self.next_player)
+            for child in children:
+                eval = child[0].minimax(depth - 1, False)
+                if eval > max_eval:
+                    max_eval = eval
+                    move = child[1]    
+            return max_eval, move
         else:
             min_eval = float("inf")
-            for (child) in self.get_leaf(Player.Defender):
-                eval = child.minimax(depth - 1, True)
-                min_eval = min(min_eval, eval)
-            return min_eval
+            for (child) in self.get_leaf(self.next_player.next()):
+                eval = child[0].minimax(depth - 1, True)
+                if eval < min_eval:
+                    min_eval = eval
+                    move = child[1] 
+            return min_eval, move
         
 
     def get_leaf(self, player: Player) -> Iterable[Tuple[Game, CoordPair] | None]:
@@ -734,22 +749,29 @@ class Game:
 
     def suggest_move(self) -> CoordPair | None:
         start_time = datetime.now()
-        (score, move) = self.alpha_beta(self.options.max_depth, - (math.inf), math.inf)  # Removed avg_depth
+        if self.options.alpha_beta == True:
+            (score, move) = self.alpha_beta(self.options.max_depth, - (math.inf), math.inf)
+        else:
+            (score, move) = self.minimax(self.options.max_depth, True)
         elapsed_seconds = (datetime.now() - start_time).total_seconds()
-        if (elapsed_seconds > self.options.max_time):
-            print(
-                f"{self.next_player.name} has taken too much time, {self.next_player.next().name} wins!")
-        self.stats.total_seconds += elapsed_seconds
-        print(f"Suggested move: {move} with score of {score} ")
-        print(f"Heuristic score: {self.e0()}")
-        print(f"Evals per depth: ", end="")
-        for k in sorted(self.stats.evaluations_per_depth.keys()):
-            print(f"{k}:{self.stats.evaluations_per_depth[k]} ", end="")
-        print()
-        total_evals = sum(self.stats.evaluations_per_depth.values())
-        if self.stats.total_seconds > 0:
-            print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
-        print(f"Elapsed time: {elapsed_seconds:0.1f}s")
+        #if (elapsed_seconds > self.options.max_time):
+            # !!! update game state and get the has_winner() to figure it out
+            
+            #print(
+                #f"{self.next_player.name} has taken too much time, {self.next_player.next().name} wins!")
+        
+        # do we still need any of this?
+        #self.stats.total_seconds += elapsed_seconds
+        #print(f"Suggested move: {move} with score of {score} ")
+        #print(f"Heuristic score: {self.e0()}")
+        #print(f"Evals per depth: ", end="")
+        #for k in sorted(self.stats.evaluations_per_depth.keys()):
+            #print(f"{k}:{self.stats.evaluations_per_depth[k]} ", end="")
+        #print()
+        #total_evals = sum(self.stats.evaluations_per_depth.values())
+        #if self.stats.total_seconds > 0:
+            #print(f"Eval perf.: {total_evals/self.stats.total_seconds/1000:0.1f}k/s")
+        #print(f"Elapsed time: {elapsed_seconds:0.1f}s")
 
         return move
    
@@ -883,7 +905,7 @@ def main():
             else:
                 out_file.write(' turns!\n')
             break
-        
+
         if game.options.game_type == GameType.AttackerVsDefender:
             result = game.human_turn()
             if game.next_player == Player.Attacker:
@@ -913,7 +935,7 @@ def main():
         #      AI heuristic score
 
         # if a game has an AI:
-        #      cumulative evals
+        out_file.write('cumulative evals: ' + str(game.cumulative_evals) + '\n')
         #      cumulative evals per depth
         #      cumulative evals per depth %
         #      average branching factor
