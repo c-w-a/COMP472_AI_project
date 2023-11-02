@@ -854,9 +854,9 @@ def main():
 
     game = Game(options=options)
 
+    # create output file and output all the game parameter stuff
     filename = 'gameTrace-' + str(game.options.alpha_beta) + '-' + str(int(game.options.max_time)) + '-' + str(game.options.max_turns) + '.txt'
     out_file = open(filename, 'w')
-
     out_file.write("\n --- GAME PARAMETERS --- \n\n")
     out_file.write("t = " + str(game.options.max_time) + "s\n")
     out_file.write("max # of turns: " + str(game.options.max_turns) + "\n")
@@ -884,15 +884,10 @@ def main():
             break
         if game.options.game_type == GameType.AttackerVsDefender:
             result = game.human_turn()
-            out_file.write('turn #' + str(game.turns_played) + '\n')
             if game.next_player == Player.Attacker:
                 player = 'Defender'
             else:   
                 player = 'Attacker'
-            out_file.write('player: ' + player + '\n')
-            out_file.write('action: ' + result)
-            out_file.write(game.board_config_to_string() + '\n')
-            # ADD STUFF HERE
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
             game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
@@ -906,6 +901,12 @@ def main():
                 print("Computer doesn't know what to do!!!")
                 out_file.close()
                 exit(1)
+        
+        # output info for each turn: TO-DO MAKE IT PRINT THE RIGHT INFO TO CONSOLE TOO
+        out_file.write('turn #' + str(game.turns_played) + '\n')
+        out_file.write('player: ' + player + '\n')
+        out_file.write('action: ' + result)
+        out_file.write(game.board_config_to_string() + '\n')
 
 ##############################################################################################################
 
