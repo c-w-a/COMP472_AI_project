@@ -1,6 +1,6 @@
 # TODO:
 # - get it printing all the right info to output file and the console
-# - double check AI time limit!
+# - double check AI time limit! (is it implemented)
 # - double check AI makes invalid move -> game over!
 # - troubleshoot heuristics, minimax, alpha beta, etc. if need be
 
@@ -21,6 +21,8 @@ import requests
 # maximum and minimum values for our heuristic scores (usually represents an end of game condition)
 MAX_HEURISTIC_SCORE = 2000000000
 MIN_HEURISTIC_SCORE = -2000000000
+
+cumulative_evals = 0
 
 class UnitType(Enum):
     """Every unit type."""
@@ -278,7 +280,6 @@ class Game:
     stats: Stats = field(default_factory=Stats)
     ai_attacker : bool = True
     ai_defender : bool = True
-    cumulative_evals : int = 0
     # add attributes to keep track of info needed for branching factor, etc.
 
 
@@ -524,18 +525,21 @@ class Game:
                 else:
                     print("The move is not valid! Try again.")
 
-    def computer_turn(self) -> CoordPair | None:
+    def computer_turn(self) -> (CoordPair, str) | (None, str):
         """Computer plays a move."""
         start_time = datetime.now()
         mv = self.suggest_move()
+        print(mv)
         if mv is not None:
             (success, result) = self.perform_move(mv)
             if success:
                 print(f"Computer {self.next_player.name}: ", end="")
                 print(result)
                 self.next_turn()
+        else:
+            return None, ''
         elapse_time = (datetime.now()-start_time).total_seconds()
-        return mv, elapse_time
+        return mv, result
 
     def player_units(self, player: Player) -> Iterable[Tuple[Coord,Unit]]:
         """Iterates over all units belonging to a player."""
@@ -593,7 +597,8 @@ class Game:
         
 
     def e0(self) -> int:
-        self.cumulative_evals = self.cumulative_evals + 1
+        global cumulative_evals
+        cumulative_evals = cumulative_evals + 1
         attackerScore = 0
         defenderScore = 0
         score = 0
@@ -605,6 +610,8 @@ class Game:
     
 
     def e1(self) -> int:
+        global cumulative_evals
+        cumulative_evals = cumulative_evals + 1
         # Define attack values for each unit
         ATTACK_POINTS = {
             UnitType.AI: 2,
@@ -661,7 +668,30 @@ class Game:
         kamikaze_score = kamikaze_value * (damage_to_adversarial - damage_to_friendly)
 
         return kamikaze_score
+    
+    # trying another heuristic -- gives each unit type a value and takes into account health (can play with the weighting)
+    def e3(self):
+        score = 0
+        unit_scores = {UnitType.AI: 100, UnitType.Virus: 75, UnitType.Tech: 75, UnitType.Program: 1, UnitType.Firewall: 1,}
 
+        attacker = self.player_units(Player.Attacker)
+        defender = self.player_units(Player.Defender)
+
+        for coord, unit in attacker:
+            unit_score = unit_scores[unit.type]
+            health_score = unit.health * 0.3
+            total_score = unit_score + health_score
+
+            score += total_score 
+        
+        for coord, unit in defender:
+            unit_score = unit_scores[unit.type]
+            health_score = unit.health * 0.3
+            total_score = unit_score + health_score
+
+            score -= total_score
+
+        return score
 
     def e_total(self) -> int:
         """Returns the total heuristic score."""
@@ -670,65 +700,60 @@ class Game:
 
     def alpha_beta(self, depth: int, alpha: int, beta: int):
         if depth == 0 or self.is_finished():
-            return (self.e0(), None)
+            return (self.e3(), None)
         leaf = self.get_leaf(self.next_player)
         if self.next_player == Player.Attacker:  
             max_eval = -(math.inf)
             maxMove = None
             for (game_copy, move) in leaf:
-                if maxMove is None:
-                    maxMove = move
                 eval = game_copy.alpha_beta(depth-1, alpha, beta)[0]
-                max_eval = max(eval, max_eval)
                 if eval > max_eval:
                     max_eval = eval
-                    maxMove = move
-                if (self.options.alpha_beta):
-                    alpha = max(alpha, max_eval)
-                    if beta <= alpha:
-                        break 
+                    maxMove = move  
+                    alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break 
             return (max_eval, maxMove)
         else:  
             min_eval = math.inf
             minMove = None
             for (game_copy, move) in leaf:
-                if minMove is None:
-                    minMove = move
                 eval = game_copy.alpha_beta(depth-1, alpha, beta)[0]
-                if eval <= min_eval:
+                if eval < min_eval:
                     min_eval = eval
                     minMove = move
-                if (self.options.alpha_beta):
                     beta = min(beta, min_eval)
-                    if beta <= alpha:
-                        break  
+                if beta <= alpha:
+                    break  
             return (min_eval, minMove)
 
 
     # needs to return the move too
     def minimax(self, depth, maximizing_player):
-        move = None
         
         if depth == 0 or self.is_finished():
-            return self.e0()
+            return (self.e0(), None)
 
         if maximizing_player:
             max_eval = float("-inf")
+            max_move = None
             children = self.get_leaf(self.next_player)
-            for child in children:
-                eval = child[0].minimax(depth - 1, False)
+            for (gamecopy, move) in children:
+                eval = gamecopy.minimax(depth - 1, False)[0]
                 if eval > max_eval:
                     max_eval = eval
-                    move = child[1]    
-            return max_eval, move
+                    max_move = move   
+            return [max_eval, max_move]
         else:
             min_eval = float("inf")
-            for (child) in self.get_leaf(self.next_player.next()):
-                eval = child[0].minimax(depth - 1, True)
+            min_move = None
+            children = self.get_leaf(self.next_player.next())
+            for (gamecopy, move) in children:
+                eval = gamecopy.minimax(depth - 1, True)[0]
                 if eval < min_eval:
                     min_eval = eval
-                    move = child[1] 
-            return min_eval, move
+                    min_move = move   
+            return [min_eval, min_move]
         
 
     def get_leaf(self, player: Player) -> Iterable[Tuple[Game, CoordPair] | None]:
@@ -905,37 +930,36 @@ def main():
             else:
                 out_file.write(' turns!\n')
             break
-
         if game.options.game_type == GameType.AttackerVsDefender:
             result = game.human_turn()
-            if game.next_player == Player.Attacker:
-                player = 'Defender'
-            else:   
-                player = 'Attacker'
         elif game.options.game_type == GameType.AttackerVsComp and game.next_player == Player.Attacker:
-            game.human_turn()
+            result = game.human_turn()
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
-            game.human_turn()
+            result = game.human_turn()
         else:
-            player = game.next_player
-            move = game.computer_turn()
-            if move is not None:
-                game.post_move_to_broker(move)
+            result = game.computer_turn()
+            if result is not None:
+                game.post_move_to_broker(result)
             else:
                 print("Computer doesn't know what to do!!!")
                 out_file.close()
                 exit(1)
         
+        
         # output info for each turn: TO-DO MAKE IT PRINT THE RIGHT INFO TO CONSOLE TOO
         out_file.write('turn #' + str(game.turns_played) + '\n')
+        if game.next_player == Player.Attacker:
+            player = 'Defender'
+        else:   
+            player = 'Attacker'
         out_file.write('player: ' + player + '\n')
-        out_file.write('action: ' + result)
+        out_file.write('action: ' + result[1])
         # if a player is AI:
         #      AI turn time in seconds (ex. 0.4s)
         #      AI heuristic score
 
         # if a game has an AI:
-        out_file.write('cumulative evals: ' + str(game.cumulative_evals) + '\n')
+        out_file.write('cumulative evals: ' + str(cumulative_evals) + '\n')
         #      cumulative evals per depth
         #      cumulative evals per depth %
         #      average branching factor
