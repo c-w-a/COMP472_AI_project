@@ -1,0 +1,1126 @@
+
+ --- GAME PARAMETERS --- 
+
+t = 5.0s
+max # of turns: 100
+play mode: CompVsComp
+alpha-beta: False
+heuristic: E0
+
+
+ --- INITIAL BOARD CONFIG ---
+
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT9 dP9  .   .   .  
+C: dF9  .   .   .  aP9 
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+
+ --- TURNS ---
+
+turn #1
+player: Attacker
+action: cumulative evals: 1
+
+    0   1   2   3   4  
+A: dA9 dT9 dF9  .   .  
+B: dT9 dP9  .   .  aP9 
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #2
+player: Defender
+action: Self Destructedcumulative evals: 2
+
+    0   1   2   3   4  
+A: dA7  .  dF7  .   .  
+B: dT7 dP7  .   .  aP9 
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #3
+player: Attacker
+action: cumulative evals: 3
+
+    0   1   2   3   4  
+A: dA7  .  dF7  .  aP9 
+B: dT7 dP7  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #4
+player: Defender
+action: cumulative evals: 3
+
+    0   1   2   3   4  
+A:  .  dA7 dF7  .  aP9 
+B: dT7 dP7  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #5
+player: Attacker
+action: cumulative evals: 4
+
+    0   1   2   3   4  
+A:  .  dA7 dF7 aP9  .  
+B: dT7 dP7  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #6
+player: Defender
+action: Self Destructedcumulative evals: 5
+
+    0   1   2   3   4  
+A:  .  dA5  .  aP7  .  
+B: dT7 dP5  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #7
+player: Attacker
+action: cumulative evals: 6
+
+    0   1   2   3   4  
+A:  .  dA5 aP7  .   .  
+B: dT7 dP5  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #8
+player: Defender
+action: cumulative evals: 7
+
+    0   1   2   3   4  
+A: dT7 dA5 aP7  .   .  
+B:  .  dP5  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #9
+player: Attacker
+action: Self Destructedcumulative evals: 8
+
+    0   1   2   3   4  
+A: dT7 dA3  .   .   .  
+B:  .  dP3  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #10
+player: Defender
+action: cumulative evals: 8
+
+    0   1   2   3   4  
+A:  .  dA3  .   .   .  
+B: dT7 dP3  .   .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .  aF9 aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #11
+player: Attacker
+action: cumulative evals: 9
+
+    0   1   2   3   4  
+A:  .  dA3  .   .   .  
+B: dT7 dP3  .   .   .  
+C: dF9  .   .  aF9  .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #12
+player: Defender
+action: cumulative evals: 9
+
+    0   1   2   3   4  
+A:  .   .  dA3  .   .  
+B: dT7 dP3  .   .   .  
+C: dF9  .   .  aF9  .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #13
+player: Attacker
+action: cumulative evals: 10
+
+    0   1   2   3   4  
+A:  .   .  dA3  .   .  
+B: dT7 dP3  .  aF9  .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #14
+player: Defender
+action: cumulative evals: 10
+
+    0   1   2   3   4  
+A:  .   .   .   .   .  
+B: dT7 dP3 dA3 aF9  .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #15
+player: Attacker
+action: Self Destructedcumulative evals: 11
+
+    0   1   2   3   4  
+A:  .   .   .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #16
+player: Defender
+action: cumulative evals: 12
+
+    0   1   2   3   4  
+A: dT7  .   .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .  aV9 
+E:  .   .  aP9 aV9 aA9 
+
+turn #17
+player: Attacker
+action: cumulative evals: 13
+
+    0   1   2   3   4  
+A: dT7  .   .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .  aV9 
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #18
+player: Defender
+action: cumulative evals: 14
+
+    0   1   2   3   4  
+A:  .   .   .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .  aV9 
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #19
+player: Attacker
+action: cumulative evals: 15
+
+    0   1   2   3   4  
+A:  .   .   .   .   .  
+B: dT7 dP3 dA1  .  aV9 
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #20
+player: Defender
+action: cumulative evals: 16
+
+    0   1   2   3   4  
+A: dT7  .   .   .   .  
+B:  .  dP3 dA1  .  aV9 
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #21
+player: Attacker
+action: cumulative evals: 17
+
+    0   1   2   3   4  
+A: dT7  .   .   .  aV9 
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #22
+player: Defender
+action: cumulative evals: 18
+
+    0   1   2   3   4  
+A:  .   .   .   .  aV9 
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #23
+player: Attacker
+action: cumulative evals: 19
+
+    0   1   2   3   4  
+A:  .   .   .  aV9  .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #24
+player: Defender
+action: cumulative evals: 20
+
+    0   1   2   3   4  
+A: dT7  .   .  aV9  .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #25
+player: Attacker
+action: cumulative evals: 21
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #26
+player: Defender
+action: cumulative evals: 22
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #27
+player: Attacker
+action: cumulative evals: 23
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #28
+player: Defender
+action: cumulative evals: 24
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #29
+player: Attacker
+action: cumulative evals: 25
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #30
+player: Defender
+action: cumulative evals: 26
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #31
+player: Attacker
+action: cumulative evals: 27
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #32
+player: Defender
+action: cumulative evals: 28
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #33
+player: Attacker
+action: cumulative evals: 29
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #34
+player: Defender
+action: cumulative evals: 30
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #35
+player: Attacker
+action: cumulative evals: 31
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #36
+player: Defender
+action: cumulative evals: 32
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #37
+player: Attacker
+action: cumulative evals: 33
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #38
+player: Defender
+action: cumulative evals: 34
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #39
+player: Attacker
+action: cumulative evals: 35
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #40
+player: Defender
+action: cumulative evals: 36
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #41
+player: Attacker
+action: cumulative evals: 37
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #42
+player: Defender
+action: cumulative evals: 38
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #43
+player: Attacker
+action: cumulative evals: 39
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #44
+player: Defender
+action: cumulative evals: 40
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #45
+player: Attacker
+action: cumulative evals: 41
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #46
+player: Defender
+action: cumulative evals: 42
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #47
+player: Attacker
+action: cumulative evals: 43
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #48
+player: Defender
+action: cumulative evals: 44
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #49
+player: Attacker
+action: cumulative evals: 45
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #50
+player: Defender
+action: cumulative evals: 46
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #51
+player: Attacker
+action: cumulative evals: 47
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #52
+player: Defender
+action: cumulative evals: 48
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #53
+player: Attacker
+action: cumulative evals: 49
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #54
+player: Defender
+action: cumulative evals: 50
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #55
+player: Attacker
+action: cumulative evals: 51
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #56
+player: Defender
+action: cumulative evals: 52
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #57
+player: Attacker
+action: cumulative evals: 53
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #58
+player: Defender
+action: cumulative evals: 54
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #59
+player: Attacker
+action: cumulative evals: 55
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #60
+player: Defender
+action: cumulative evals: 56
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #61
+player: Attacker
+action: cumulative evals: 57
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #62
+player: Defender
+action: cumulative evals: 58
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #63
+player: Attacker
+action: cumulative evals: 59
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #64
+player: Defender
+action: cumulative evals: 60
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #65
+player: Attacker
+action: cumulative evals: 61
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #66
+player: Defender
+action: cumulative evals: 62
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #67
+player: Attacker
+action: cumulative evals: 63
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #68
+player: Defender
+action: cumulative evals: 64
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #69
+player: Attacker
+action: cumulative evals: 65
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #70
+player: Defender
+action: cumulative evals: 66
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #71
+player: Attacker
+action: cumulative evals: 67
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #72
+player: Defender
+action: cumulative evals: 68
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #73
+player: Attacker
+action: cumulative evals: 69
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #74
+player: Defender
+action: cumulative evals: 70
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #75
+player: Attacker
+action: cumulative evals: 71
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #76
+player: Defender
+action: cumulative evals: 72
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #77
+player: Attacker
+action: cumulative evals: 73
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #78
+player: Defender
+action: cumulative evals: 74
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #79
+player: Attacker
+action: cumulative evals: 75
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #80
+player: Defender
+action: cumulative evals: 76
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #81
+player: Attacker
+action: cumulative evals: 77
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #82
+player: Defender
+action: cumulative evals: 78
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #83
+player: Attacker
+action: cumulative evals: 79
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #84
+player: Defender
+action: cumulative evals: 80
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #85
+player: Attacker
+action: cumulative evals: 81
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #86
+player: Defender
+action: cumulative evals: 82
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #87
+player: Attacker
+action: cumulative evals: 83
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #88
+player: Defender
+action: cumulative evals: 84
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #89
+player: Attacker
+action: cumulative evals: 85
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #90
+player: Defender
+action: cumulative evals: 86
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #91
+player: Attacker
+action: cumulative evals: 87
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #92
+player: Defender
+action: cumulative evals: 88
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #93
+player: Attacker
+action: cumulative evals: 89
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #94
+player: Defender
+action: cumulative evals: 90
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #95
+player: Attacker
+action: cumulative evals: 91
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #96
+player: Defender
+action: cumulative evals: 92
+
+    0   1   2   3   4  
+A: dT7 aV9  .   .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #97
+player: Attacker
+action: cumulative evals: 93
+
+    0   1   2   3   4  
+A: dT7  .  aV9  .   .  
+B:  .  dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #98
+player: Defender
+action: cumulative evals: 94
+
+    0   1   2   3   4  
+A:  .   .  aV9  .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #99
+player: Attacker
+action: cumulative evals: 95
+
+    0   1   2   3   4  
+A:  .  aV9  .   .   .  
+B: dT7 dP3 dA1  .   .  
+C: dF9  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+turn #100
+player: Defender
+action: Self Destructedcumulative evals: 103
+
+    0   1   2   3   4  
+A:  .  aV7  .   .   .  
+B: dT5  .   .   .   .  
+C: dF7  .   .   .   .  
+D:  .   .   .   .   .  
+E:  .   .  aP9 aV9 aA9 
+
+
+ --- WINNER --- 
+
+Defender wins in 100 turns!

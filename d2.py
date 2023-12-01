@@ -937,7 +937,7 @@ def main():
         elif game.options.game_type == GameType.CompVsDefender and game.next_player == Player.Defender:
             result = game.human_turn()
         else:
-            result = game.computer_turn()
+            mv, result = game.computer_turn()
             if result is not None:
                 game.post_move_to_broker(result)
             else:
@@ -953,7 +953,7 @@ def main():
         else:   
             player = 'Attacker'
         out_file.write('player: ' + player + '\n')
-        out_file.write('action: ' + result[1])
+        out_file.write('action: ' + result)
         # if a player is AI:
         #      AI turn time in seconds (ex. 0.4s)
         #      AI heuristic score
